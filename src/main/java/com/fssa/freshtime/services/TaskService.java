@@ -6,73 +6,47 @@ import com.fssa.freshtime.exceptions.InvalidInputException;
 import com.fssa.freshtime.models.Task;
 import com.fssa.freshtime.validations.TaskValidator;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+
 public class TaskService {
+
+
     public boolean addTaskToDB(Task task) throws DAOException, InvalidInputException {
-        if(TaskValidator.validate(task)){
-            return TaskDAO.createTask(task);
+        if(TaskValidator.validate(task)) return TaskDAO.createTask(task);
+        else return false;
+    }
+
+    public ArrayList<Task> readAllTask() throws DAOException{
+        return TaskDAO.readTask();
+    }
+
+    public boolean updateTaskAttribute(int taskId, String attributeName, Object attributeValue) throws DAOException, InvalidInputException {
+        if (TaskDAO.getAllIds().contains(taskId)) {
+            boolean isValid = switch (attributeName) {
+                case "taskName" -> TaskValidator.validateTaskName((String) attributeValue);
+                case "taskDescription" -> TaskValidator.validateTaskDescription((String) attributeValue);
+                case "dueDate" -> TaskValidator.validateDueDate((LocalDate) attributeValue);
+                case "priority" -> TaskValidator.validatePriority((String) attributeValue);
+                case "taskStatus" -> TaskValidator.validateStatus((String) attributeValue);
+                case "taskNotes" -> TaskValidator.validateTaskNotes((String) attributeValue);
+                case "reminder" -> TaskValidator.validateReminder((LocalDateTime) attributeValue);
+                default -> throw new InvalidInputException("Invalid attribute name");
+            };
+
+            if (isValid) {
+                return TaskDAO.updateTaskAttribute(taskId, attributeName, attributeValue);
+            }
         }
         return false;
     }
 
-    public boolean updateTaskName(Task  task) throws DAOException, InvalidInputException {
-        if(TaskValidator.validate(task)){
-            return TaskDAO.updateTaskName(task);
-        }
+    public boolean deleteTask(int taskId) throws DAOException, InvalidInputException {
+        if(TaskDAO.getAllIds().contains(taskId)) return TaskDAO.deleteTask(taskId);
         return false;
     }
 
-    public boolean updateTaskDescription(Task task) throws DAOException, InvalidInputException {
-        if(TaskValidator.validate(task)){
-            return TaskDAO.updateTaskDescription(task);
-        }
-        return false;
-    }
-
-    public boolean updateTaskDueDate(Task task) throws DAOException, InvalidInputException {
-        if(TaskValidator.validate(task)){
-            return TaskDAO.updateTaskDueDate(task);
-        }
-        return false;
-    }
-
-    public boolean updateTaskPriority(Task task) throws DAOException, InvalidInputException {
-        if(TaskValidator.validate(task)){
-            return TaskDAO.updateTaskPriority(task);
-        }
-        return false;
-    }
-
-    public boolean updateTaskStatus(Task task) throws DAOException, InvalidInputException {
-        if(TaskValidator.validate(task)){
-            return TaskDAO.updateTaskStatus(task);
-        }
-        return false;
-    }
-
-    public boolean updateTaskNotes(Task task) throws DAOException, InvalidInputException {
-        if(TaskValidator.validate(task)){
-            return TaskDAO.updateTaskNotes(task);
-        }
-        return false;
-    }
-
-    public boolean updateTaskReminder(Task task) throws DAOException, InvalidInputException {
-        if(TaskValidator.validate(task)){
-            return TaskDAO.updateTaskReminder(task);
-        }
-        return false;
-    }
-
-
-    public boolean deleteTask(Task task) throws DAOException, InvalidInputException {
-        if(TaskValidator.validate(task)) return TaskDAO.deleteTask(task.getTaskId());
-        return false;
-    }
-
-    public Task readTask(Task task) throws DAOException, InvalidInputException{
-        if(TaskValidator.validate(task)) return TaskDAO.readTask(task.getTaskId());
-        return task;
-    }
 
     public boolean createTaskTag(Task task) throws InvalidInputException {
         try {

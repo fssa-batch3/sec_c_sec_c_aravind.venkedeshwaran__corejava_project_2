@@ -20,7 +20,6 @@ public class TaskValidator {
      * @return true if the Task is valid, otherwise throw InvalidInputException.
      */
     public static boolean validate(Task task) throws InvalidInputException {
-        validateTaskId(task.getTaskId());
         validateTaskName(task.getTaskName());
         validateTaskDescription(task.getTaskDescription());
         validateDueDate(task.getDueDate());
@@ -30,21 +29,8 @@ public class TaskValidator {
         validateReminder(task.getReminder());
         validateCreatedDate(task.getCreatedDate());
         validateCreatedTime(task.getCreatedTime());
-        validateTag(task.getTaskTag()) ;
+//        validateTag(task.getTaskTag()) ;
         return true; // Placeholder method; actual validation should be implemented here.
-    }
-
-    /**
-     * Validates the task ID.
-     *
-     * @param id The task ID to be validated.
-     * @return true if the task ID is valid, throws an InvalidInputException if invalid.
-     */
-    public static boolean validateTaskId(int id) throws InvalidInputException {
-        if (id <= 0) {
-            throw new InvalidInputException(TaskErrors.INVALID_TASK_ID);
-        }
-        return true;
     }
 
     /**

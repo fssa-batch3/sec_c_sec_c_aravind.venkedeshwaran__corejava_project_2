@@ -2,8 +2,11 @@ package com.fssa.freshtime.dao;
 
 import com.fssa.freshtime.exceptions.DAOException;
 import com.fssa.freshtime.models.Task;
+import com.fssa.freshtime.services.TaskService;
 
 import java.sql.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -12,7 +15,8 @@ public class TaskDAO {
 
     public static boolean createTask(Task task) throws DAOException {
         try (Connection connection = ConnectionUtil.getConnection()) {
-            String insertQuery = "INSERT INTO tasks (taskId, taskName, taskDescription, dueDate, priority, taskStatus, taskNotes, reminder, createdDate, createdTime) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            String insertQuery = "INSERT INTO tasks (taskId, taskName, taskDescription, dueDate, priority, " +
+                    "taskStatus, taskNotes, reminder, createdDate, createdTime) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             try (PreparedStatement psmt = connection.prepareStatement(insertQuery)) {
                 psmt.setInt(1, task.getTaskId());
                 psmt.setString(2, task.getTaskName());
@@ -25,21 +29,22 @@ public class TaskDAO {
                 psmt.setDate(9, java.sql.Date.valueOf(task.getCreatedDate()));
                 psmt.setTimestamp(10, java.sql.Timestamp.valueOf(task.getCreatedTime()));
 
-                psmt.executeUpdate();
-                return true;
+                int rowAffected = psmt.executeUpdate();
+                System.out.println("No.Of Rows Affected: " + rowAffected);
+                return rowAffected > 0;
             }
         } catch (SQLException e) {
             throw new DAOException("Error while creating task: " + e.getMessage());
         }
     }
 
-    public static Task readTask(int taskId) throws DAOException {
+    public static ArrayList<Task> readTask() throws DAOException {
         try (Connection connection = ConnectionUtil.getConnection()) {
-            String selectQuery = "SELECT * FROM tasks WHERE taskId=?";
+            String selectQuery = "SELECT * FROM tasks";
             try (PreparedStatement psmt = connection.prepareStatement(selectQuery)) {
-                psmt.setInt(1, taskId);
                 try (ResultSet rs = psmt.executeQuery()) {
-                    if (rs.next()) {
+                    ArrayList<Task> taskList = new ArrayList<Task>();
+                    while (rs.next()) {
                         Task task = new Task();
                         task.setTaskId(rs.getInt("taskId"));
                         task.setTaskName(rs.getString("taskName"));
@@ -51,10 +56,9 @@ public class TaskDAO {
                         task.setReminder(rs.getTimestamp("Reminder").toLocalDateTime());
                         task.setCreatedDate(rs.getDate("createdDate").toLocalDate());
                         task.setCreatedTime(rs.getTimestamp("createdTime").toLocalDateTime());
-                        return task;
-                    } else {
-                        return null; // Task not found
+                        taskList.add(task);
                     }
+                    return taskList;
                 }
             }
         } catch (SQLException e) {
@@ -62,113 +66,60 @@ public class TaskDAO {
         }
     }
 
-    public static boolean updateTaskName(Task task) throws DAOException {
+    public static ArrayList<Integer> getAllIds() throws DAOException{
         try (Connection connection = ConnectionUtil.getConnection()) {
-            String updateQuery = "UPDATE tasks SET taskName=? WHERE taskId=?";
+            String selectQuery = "SELECT taskId FROM tasks";
+            try (PreparedStatement psmt = connection.prepareStatement(selectQuery)) {
+                try (ResultSet rs = psmt.executeQuery()) {
+                    ArrayList<Integer> idList = new ArrayList<Integer>();
+                    while (rs.next()) {
+                        idList.add(rs.getInt("taskId"));
+                    }
+                    return idList;
+                }
+            }
+        }
+        catch (SQLException e) {
+            throw new DAOException("Error while reading task: " + e.getMessage());
+        }
+    }
+
+
+    public static boolean updateTaskAttribute(int taskId, String attributeName, Object attributeValue) throws DAOException {
+        try (Connection connection = ConnectionUtil.getConnection()) {
+            String updateQuery = "UPDATE tasks SET " + attributeName + "=? WHERE taskId=?";
             try (PreparedStatement psmt = connection.prepareStatement(updateQuery)) {
-                psmt.setString(1, task.getTaskName());
-                psmt.setInt(2, task.getTaskId());
-                psmt.executeUpdate();
-                return true;
+                if (attributeValue instanceof String) {
+                    psmt.setString(1, (String) attributeValue);
+                } else if (attributeValue instanceof LocalDate) {
+                    psmt.setDate(1, java.sql.Date.valueOf((LocalDate) attributeValue));
+                } else if (attributeValue instanceof LocalDateTime) {
+                    psmt.setTimestamp(1, java.sql.Timestamp.valueOf((LocalDateTime) attributeValue));
+                } else {
+                    throw new IllegalArgumentException("Unsupported attribute value type");
+                }
+
+                psmt.setInt(2, taskId);
+
+                int rowAffected = psmt.executeUpdate();
+                System.out.println("No.Of Rows Affected: " + rowAffected);
+                return rowAffected > 0;
             }
         } catch (SQLException e) {
             throw new DAOException("Error while updating task: " + e.getMessage());
         }
     }
 
-    public static boolean updateTaskDescription(Task task) throws DAOException {
-        try (Connection connection = ConnectionUtil.getConnection()) {
-            String updateQuery = "UPDATE tasks SET taskDescription=? WHERE taskId=?";
-            try (PreparedStatement psmt = connection.prepareStatement(updateQuery)) {
-                psmt.setString(1, task.getTaskDescription());
-                psmt.setInt(2, task.getTaskId());
-                psmt.executeUpdate();
-                return true;
-            }
-        } catch (SQLException e) {
-            throw new DAOException("Error while updating task: " + e.getMessage());
-        }
 
-    }
-
-    public static boolean updateTaskDueDate(Task task) throws DAOException {
-        try (Connection connection = ConnectionUtil.getConnection()) {
-            String updateQuery = "UPDATE tasks SET dueDate=? WHERE taskId=?";
-            try (PreparedStatement psmt = connection.prepareStatement(updateQuery)) {
-                psmt.setDate(1, java.sql.Date.valueOf(task.getDueDate()));
-                psmt.setInt(2, task.getTaskId());
-                psmt.executeUpdate();
-                return true;
-            }
-        } catch (SQLException e) {
-            throw new DAOException("Error while updating task: " + e.getMessage());
-        }
-    }
-
-    public static boolean updateTaskPriority(Task task) throws DAOException {
-        try (Connection connection = ConnectionUtil.getConnection()) {
-            String updateQuery = "UPDATE tasks SET priority=? WHERE taskId=?";
-            try (PreparedStatement psmt = connection.prepareStatement(updateQuery)) {
-                psmt.setString(1, task.getPriority());
-                psmt.setInt(2, task.getTaskId());
-                psmt.executeUpdate();
-                return true;
-            }
-        } catch (SQLException e) {
-            throw new DAOException("Error while updating task: " + e.getMessage());
-        }
-    }
-
-    public static boolean updateTaskStatus(Task task) throws DAOException {
-        try (Connection connection = ConnectionUtil.getConnection()) {
-            String updateQuery = "UPDATE tasks SET taskStatus=? WHERE taskId=?";
-            try (PreparedStatement psmt = connection.prepareStatement(updateQuery)) {
-                psmt.setString(1, task.getTaskStatus());
-                psmt.setInt(2, task.getTaskId());
-                psmt.executeUpdate();
-                return true;
-            }
-        } catch (SQLException e) {
-            throw new DAOException("Error while updating task: " + e.getMessage());
-        }
-    }
-
-    public static boolean updateTaskNotes(Task task) throws DAOException {
-        try (Connection connection = ConnectionUtil.getConnection()) {
-            String updateQuery = "UPDATE tasks SET taskStatus=? WHERE taskId=?";
-            try (PreparedStatement psmt = connection.prepareStatement(updateQuery)) {
-                psmt.setString(1, task.getTaskNotes());
-                psmt.setInt(2, task.getTaskId());
-                psmt.executeUpdate();
-                return true;
-            }
-        } catch (SQLException e) {
-            throw new DAOException("Error while updating task: " + e.getMessage());
-        }
-    }
-
-    public static boolean updateTaskReminder(Task task) throws DAOException {
-        try (Connection connection = ConnectionUtil.getConnection()) {
-            String updateQuery = "UPDATE tasks SET taskStatus=? WHERE taskId=?";
-            try (PreparedStatement psmt = connection.prepareStatement(updateQuery)) {
-                psmt.setTimestamp(1, java.sql.Timestamp.valueOf(task.getReminder()));
-                psmt.setInt(2, task.getTaskId());
-                psmt.executeUpdate();
-                return true;
-            }
-        } catch (SQLException e) {
-            throw new DAOException("Error while updating task: " + e.getMessage());
-        }
-    }
-
-    //
     public static boolean deleteTask(int taskId) throws DAOException {
         try (Connection connection = ConnectionUtil.getConnection()) {
             String deleteQuery = "DELETE FROM tasks WHERE taskId=?";
             try (PreparedStatement psmt = connection.prepareStatement(deleteQuery)) {
                 psmt.setInt(1, taskId);
                 psmt.executeUpdate();
-                return true;
+
+                int rowAffected = psmt.executeUpdate();
+                return rowAffected > 0;
             }
         } catch (SQLException e) {
             throw new DAOException("Error while deleting task: " + e.getMessage());

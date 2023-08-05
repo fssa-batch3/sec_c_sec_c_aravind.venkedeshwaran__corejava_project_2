@@ -17,7 +17,6 @@ class TaskValidatorTest {
     @Test
     void valid_task_with_valid_input() {
         Task task = new Task();
-        task.setTaskId(1);
         task.setTaskName("Test Task");
         task.setTaskDescription("TestCase for sample task");
         task.setDueDate(LocalDate.now().plusDays(5));
@@ -32,7 +31,6 @@ class TaskValidatorTest {
     @Test
     void invalid_task_with_invalid_taskName() {
         Task task = new Task();
-        task.setTaskId(1);
         task.setTaskName("Do");
         task.setTaskDescription("TestCase for sample task");
         task.setDueDate(LocalDate.now().plusDays(5));
@@ -47,7 +45,6 @@ class TaskValidatorTest {
     @Test
     void invalid_task_with_invalid_dueDate() {
         Task task = new Task();
-        task.setTaskId(1);
         task.setTaskName("Do");
         task.setTaskDescription("TestCase for sample task");
         task.setDueDate(LocalDate.now().minusDays(1));
@@ -62,7 +59,6 @@ class TaskValidatorTest {
     @Test
     void invalid_task_with_invalid_status() {
         Task task = new Task();
-        task.setTaskId(1);
         task.setTaskName("Do");
         task.setTaskDescription("TestCase for sample task");
         task.setDueDate(LocalDate.now().plusDays(5));
@@ -77,7 +73,6 @@ class TaskValidatorTest {
     @Test
     void invalid_task_with_invalid_reminder() {
         Task task = new Task();
-        task.setTaskId(1);
         task.setTaskName("Do");
         task.setTaskDescription("TestCase for sample task");
         task.setDueDate(LocalDate.now().plusDays(5));
@@ -89,15 +84,6 @@ class TaskValidatorTest {
         assertThrows(InvalidInputException.class, () -> TaskValidator.validate(task));
     }
 
-    @Test
-    void test_valid_task_id() {
-        assertDoesNotThrow(() -> TaskValidator.validateTaskId(1));
-    }
-
-    @Test
-    void test_valid_task_id_with_zero() {
-        assertThrows(InvalidInputException.class, () -> TaskValidator.validateTaskId(0), TaskErrors.INVALID_TASK_ID);
-    }
 
     @Test
     void test_valid_task_name() {
