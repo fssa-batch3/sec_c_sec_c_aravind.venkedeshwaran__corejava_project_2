@@ -339,58 +339,58 @@ class TaskValidatorTest {
         assertThrows(InvalidInputException.class, () -> TaskValidator.validateCreatedTime(created_after_thirty_min), TaskErrors.INVALID_CREATEDTIME);
     }
 
-    @Test
-    void testAddTaskTag() {
-        Task task = new Task();
-
-        String taskName = "Urgent Task Tag Task";
-        task.setTaskName(taskName);
-
-        String taskTag = "Test Case";
-        task.setTag(taskTag);
-
-        task.setTaskDescription("TestCase for sample task");
-        task.setDueDate(LocalDate.now().plusDays(5));
-        task.setPriority("High");
-        task.setTaskStatus("In Progress");
-        task.setTaskNotes("This is the sample note for test task");
-        task.setReminder(LocalDateTime.now().plusMinutes(30));
-
-
-        HashMap<String, ArrayList<String>> taskTagsMap = task.getTaskTagsMap();
-        assertTrue(taskTagsMap.containsKey(taskTag));
-        assertTrue(taskTagsMap.get(taskTag).contains(taskName));
-        System.out.println(task.getTaskTagsMap());
-
-    }
-
-    @Test
-    void testAddingMultipleTaskInSingleTag() {
-        Task task1 = new Task();
-        String task1Name = "Urgent Task Tag Task";
-        task1.setTaskName(task1Name);
-        String task1Tag = "Test Case";
-        task1.setTag(task1Tag);
-
-        Task task2 = new Task();
-        String task2Name = "Another Urgent Task Tag Task";
-        task2.setTaskName(task2Name);
-        String task2Tag = "Test Case";
-        task2.setTag(task2Tag);
-
-
-
-        HashMap<String, ArrayList<String>> taskTagsMap = task2.getTaskTagsMap();
-
-        assertTrue(taskTagsMap.containsKey(task1Tag));
-        assertTrue(taskTagsMap.containsKey(task2Tag));
-
-        assertTrue(taskTagsMap.get(task1Tag).contains(task1Name));
-        assertTrue(taskTagsMap.get(task2Tag).contains(task2Name));
-
-        System.out.println(task2.getTaskTagsMap());
-
-    }
+//    @Test
+//    void testAddTaskTag() {
+//        Task task = new Task();
+//
+//        String taskName = "Urgent Task Tag Task";
+//        task.setTaskName(taskName);
+//
+//        String taskTag = "Test Case";
+//        task.setTag(taskTag);
+//
+//        task.setTaskDescription("TestCase for sample task");
+//        task.setDueDate(LocalDate.now().plusDays(5));
+//        task.setPriority("High");
+//        task.setTaskStatus("In Progress");
+//        task.setTaskNotes("This is the sample note for test task");
+//        task.setReminder(LocalDateTime.now().plusMinutes(30));
+//
+//
+//        HashMap<String, ArrayList<String>> taskTagsMap = task.getTaskTagsMap();
+//        assertTrue(taskTagsMap.containsKey(taskTag));
+//        assertTrue(taskTagsMap.get(taskTag).contains(taskName));
+//        System.out.println(task.getTaskTagsMap());
+//
+//    }
+//
+//    @Test
+//    void testAddingMultipleTaskInSingleTag() {
+//        Task task1 = new Task();
+//        String task1Name = "Urgent Task Tag Task";
+//        task1.setTaskName(task1Name);
+//        String task1Tag = "Test Case";
+//        task1.setTag(task1Tag);
+//
+//        Task task2 = new Task();
+//        String task2Name = "Another Urgent Task Tag Task";
+//        task2.setTaskName(task2Name);
+//        String task2Tag = "Test Case";
+//        task2.setTag(task2Tag);
+//
+//
+//
+//        HashMap<String, ArrayList<String>> taskTagsMap = task2.getTaskTagsMap();
+//
+//        assertTrue(taskTagsMap.containsKey(task1Tag));
+//        assertTrue(taskTagsMap.containsKey(task2Tag));
+//
+//        assertTrue(taskTagsMap.get(task1Tag).contains(task1Name));
+//        assertTrue(taskTagsMap.get(task2Tag).contains(task2Name));
+//
+//        System.out.println(task2.getTaskTagsMap());
+//
+//    }
 
 
 }

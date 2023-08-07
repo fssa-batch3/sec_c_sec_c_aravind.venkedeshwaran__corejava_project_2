@@ -1,6 +1,7 @@
 package com.fssa.freshtime.dao;
 
 import com.fssa.freshtime.exceptions.DAOException;
+import com.fssa.freshtime.exceptions.InvalidInputException;
 import com.fssa.freshtime.models.Task;
 import com.fssa.freshtime.services.TaskService;
 
@@ -91,11 +92,14 @@ public class TaskDAO {
             try (PreparedStatement psmt = connection.prepareStatement(updateQuery)) {
                 if (attributeValue instanceof String) {
                     psmt.setString(1, (String) attributeValue);
-                } else if (attributeValue instanceof LocalDate) {
+                }
+                else if (attributeValue instanceof LocalDate) {
                     psmt.setDate(1, java.sql.Date.valueOf((LocalDate) attributeValue));
-                } else if (attributeValue instanceof LocalDateTime) {
+                }
+                else if (attributeValue instanceof LocalDateTime) {
                     psmt.setTimestamp(1, java.sql.Timestamp.valueOf((LocalDateTime) attributeValue));
-                } else {
+                }
+                else {
                     throw new IllegalArgumentException("Unsupported attribute value type");
                 }
 
@@ -116,7 +120,6 @@ public class TaskDAO {
             String deleteQuery = "DELETE FROM tasks WHERE taskId=?";
             try (PreparedStatement psmt = connection.prepareStatement(deleteQuery)) {
                 psmt.setInt(1, taskId);
-                psmt.executeUpdate();
 
                 int rowAffected = psmt.executeUpdate();
                 return rowAffected > 0;
@@ -126,49 +129,91 @@ public class TaskDAO {
         }
     }
 
-
-    public static boolean createTaskTags(Task task) throws DAOException {
+    public static boolean createTags(int taskId, String tag) throws DAOException {
         try (Connection connection = ConnectionUtil.getConnection()) {
-            try {
-                for (String taskName : task.getTaskTagsMap().keySet()) {
-                    int taskId = getTaskIdFromDatabase(connection, taskName);
-                    if (taskId != -1) {
-                        ArrayList<String> tags = task.getTaskTagsMap().get(taskName);
-                        insertTags(connection, taskId, tags);
-                    }
-                }
-                return true;
-            } catch (SQLException e) {
-                throw new DAOException("Error while creating task tags: " + e.getMessage());
+            String insertQuery = "INSERT INTO taskTags (taskId, tagName) VALUES (?, ?)";
+            try (PreparedStatement psmt = connection.prepareStatement(insertQuery)) {
+                psmt.setInt(1, taskId);
+                psmt.setString(2, tag.toLowerCase());
+
+                int rowAffected = psmt.executeUpdate();
+                System.out.println(rowAffected);
+                return rowAffected > 0;
             }
         } catch (SQLException e) {
             throw new DAOException("Error while creating task tags: " + e.getMessage());
         }
     }
 
-    private static int getTaskIdFromDatabase(Connection connection, String taskName) throws SQLException {
-        String selectIdQuery = "SELECT taskId FROM tasks WHERE taskName=?";
-        try (PreparedStatement psmt = connection.prepareStatement(selectIdQuery)) {
-            psmt.setString(1, taskName);
-            try (ResultSet rs = psmt.executeQuery()) {
-                if (rs.next()) {
-                    return rs.getInt("taskId");
+    public static ArrayList<ArrayList<String>> readTaskTags() throws DAOException {
+        ArrayList<ArrayList<String>> taskTagList = new ArrayList<>();
+
+        try (Connection connection = ConnectionUtil.getConnection()) {
+            String selectQuery = "SELECT tasks.taskId, tasks.taskName, taskTags.tagName " +
+                    "FROM tasks " +
+                    "LEFT JOIN taskTags ON tasks.taskId = taskTags.taskId";
+            try (PreparedStatement psmt = connection.prepareStatement(selectQuery);
+                 ResultSet rs = psmt.executeQuery()) {
+
+                while (rs.next()) {
+                    ArrayList<String> row = new ArrayList<>();
+                    row.add(Integer.toString(rs.getInt("taskId")) + " ");
+                    row.add(rs.getString("taskName") + " ");
+                    row.add(rs.getString("tagName") + " ");
+                    taskTagList.add(row);
                 }
             }
+        } catch (SQLException e) {
+            throw new DAOException("Error while reading task tags: " + e.getMessage());
         }
-        return -1;
+
+        return taskTagList;
     }
 
-    private static void insertTags(Connection connection, int taskId, ArrayList<String> tags) throws SQLException {
-        String insertQuery = "INSERT INTO tags (taskId, tagName) VALUES (?, ?)";
-        try (PreparedStatement psmt = connection.prepareStatement(insertQuery)) {
-            for (String tag : tags) {
+    //TODO Write Update Tag Method
+    //TODO Write Delete Tag Method
+
+    public static boolean createSubtask(int taskId, String subTaskName) throws DAOException{
+        try (Connection connection = ConnectionUtil.getConnection()) {
+            String insertQuery = "INSERT INTO subTasks (taskId, subtask) VALUES (?, ?)";
+            try (PreparedStatement psmt = connection.prepareStatement(insertQuery)) {
                 psmt.setInt(1, taskId);
-                psmt.setString(2, tag);
-                psmt.executeUpdate();
+                psmt.setString(2, subTaskName);
+
+                int rowAffected = psmt.executeUpdate();
+                System.out.println(rowAffected);
+                return rowAffected > 0;
             }
+        } catch (SQLException e) {
+            throw new DAOException("Error while creating task tags: " + e.getMessage());
         }
     }
+    public static ArrayList<ArrayList<String>> readSubTask() throws DAOException {
+        ArrayList<ArrayList<String>> taskWithSubTaskList = new ArrayList<>();
+
+        try (Connection connection = ConnectionUtil.getConnection()) {
+            String selectQuery = "SELECT tasks.taskId, tasks.taskName, subTasks.subtask " +
+                    "FROM tasks " +
+                    "LEFT JOIN subTasks ON tasks.taskId = subTasks.taskId";
+            try (PreparedStatement psmt = connection.prepareStatement(selectQuery);
+                 ResultSet rs = psmt.executeQuery()) {
+
+                while (rs.next()) {
+                    ArrayList<String> row = new ArrayList<>();
+                    row.add(Integer.toString(rs.getInt("taskId")) + " ");
+                    row.add(rs.getString("taskName") + " ");
+                    row.add(rs.getString("subtask") + " ");
+                    taskWithSubTaskList.add(row);
+                }
+            }
+        } catch (SQLException e) {
+            throw new DAOException("Error while reading task tags: " + e.getMessage());
+        }
+
+        return taskWithSubTaskList;
+    }
+
+
 }
 
 

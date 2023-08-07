@@ -48,15 +48,22 @@ public class TaskService {
     }
 
 
-    public boolean createTaskTag(Task task) throws InvalidInputException {
-        try {
-            if (TaskValidator.validate(task)) {
-                return TaskDAO.createTaskTags(task);
-            }
-            return false;
-        } catch (DAOException e) {
-            throw new InvalidInputException("Error while creating task tag: " + e.getMessage());
-        }
+    public boolean createTaskTag(int taskId, String tag)  throws DAOException, InvalidInputException {
+        if(TaskValidator.validateTag(tag)) return TaskDAO.createTags(taskId, tag);
+        return false;
+    }
+
+    public ArrayList<ArrayList<String>> readTaskWithTags() throws DAOException{
+        return TaskDAO.readTaskTags();
+    }
+
+    public boolean createSubTask(int taskId, String subTask)  throws DAOException, InvalidInputException {
+        if(TaskValidator.validateTaskName(subTask)) return TaskDAO.createSubtask(taskId, subTask);
+        return false;
+    }
+
+    public ArrayList<ArrayList<String>> readTaskWithSubTask() throws DAOException{
+        return TaskDAO.readSubTask();
     }
 
 }

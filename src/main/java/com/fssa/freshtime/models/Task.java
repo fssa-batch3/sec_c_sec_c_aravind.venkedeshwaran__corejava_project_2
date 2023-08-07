@@ -99,19 +99,7 @@ public class Task {
     }
 
     public void setTag(String taskTag){
-        if (taskTagsMap == null) {
-            taskTagsMap = new HashMap<>();  // Initialize the map if not already done
-        }
-
-        if (taskTagsMap.containsKey(taskTag)) {                 //checks the tasktags is exist in tasktagsMap hashmap
-            ArrayList<String> tasks = taskTagsMap.get(taskTag);  //getting all the existing task associated with current tasktags
-            tasks.add(this.getTaskName());                                 //if exist add the taskname in the arraylist
-        } else {
-            ArrayList<String> tasks = new ArrayList<>();         //else create new arraylist
-            tasks.add(this.getTaskName());                                 //add the taskname in the task arraylist
-            taskTagsMap.put(taskTag, tasks);                     //map the taskname with tags
-        }
-
+        this.taskTag = taskTag;
     }
 
     public String getTaskTag(){
@@ -149,10 +137,10 @@ public class Task {
                 ", taskStatus='" + taskStatus + '\'' +
                 ", taskNotes='" + taskNotes + '\'' +
                 ", reminder=" + reminder +
+                ", taskTag='" + taskTag + '\'' +
                 ", createdLocalDate=" + createdLocalDate +
                 ", createdTime=" + createdTime +
                 '}';
     }
-
 }
 

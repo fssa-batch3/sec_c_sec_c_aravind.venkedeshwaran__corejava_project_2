@@ -198,23 +198,62 @@ public class TaskServiceTest {
 
     }
 
-//
-//    @Test
-//    void testCreateTaskTag() {
-//        Task task = new Task();
-//        task.setTaskId(3);
-//        task.setTaskName("Test Task");
-//        task.setTaskDescription("TestCase for sample task");
-//        task.setDueDate(LocalDate.now().plusDays(5));
-//        task.setPriority("High");
-//        task.setTaskStatus("In Progress");
-//        task.setTaskNotes("This is the sample note for test task");
-//        task.setReminder(LocalDateTime.now().plusMinutes(30));
-//        task.setTag("Test Case");
-//
-//
-//        TaskService taskService = new TaskService();
-//        assertDoesNotThrow(() -> taskService.createTaskTag(task));
-//    }
+    @Test
+    void testCreateTaskTag(){
+        TaskService taskService = new TaskService();
+
+        assertDoesNotThrow(() -> taskService.createTaskTag(7, "Habit"));
+    }
+
+    @Test
+    void testReadTagsWithTask(){
+        TaskService taskService = new TaskService();
+
+        try{
+            ArrayList<ArrayList<String>> taskWithTagsList = taskService.readTaskWithTags();
+
+            assertNotNull(taskWithTagsList);
+            assertFalse(taskWithTagsList.isEmpty());
+
+            for (ArrayList<String> taskWithTags : taskWithTagsList){
+                for(String row : taskWithTags){
+                    System.out.print(row);
+                }
+                System.out.println();
+            }
+        }
+        catch (DAOException e) {
+            fail("An DAOException occurred: " + e.getMessage());
+        }
+    }
+
+    @Test
+    void testCreateSubTask(){
+        TaskService taskService = new TaskService();
+
+        assertDoesNotThrow(() -> taskService.createSubTask(1, "Create toString()"));
+    }
+
+    @Test
+    void testReadTaskWithSubTask(){
+        TaskService taskService = new TaskService();
+
+        try{
+            ArrayList<ArrayList<String>> taskWithSubTaskList = taskService.readTaskWithSubTask();
+
+            assertNotNull(taskWithSubTaskList);
+            assertFalse(taskWithSubTaskList.isEmpty());
+
+            for (ArrayList<String> taskWithSubTask : taskWithSubTaskList){
+                for(String row : taskWithSubTask){
+                    System.out.print(row);
+                }
+                System.out.println();
+            }
+        }
+        catch (DAOException e) {
+            fail("An DAOException occurred: " + e.getMessage());
+        }
+    }
 
 }
