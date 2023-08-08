@@ -18,8 +18,6 @@ public class Task {
     private String taskStatus;
     private String taskNotes;
     private LocalDateTime reminder;
-    private String taskTag;
-    private static HashMap<String, ArrayList<String> > taskTagsMap;
     private LocalDate createdLocalDate;
     private LocalDateTime createdTime;
 
@@ -96,18 +94,6 @@ public class Task {
 
     public void setReminder(LocalDateTime reminder) {
         this.reminder = reminder;
-    }
-
-    public void setTag(String taskTag){
-        this.taskTag = taskTag;
-    }
-
-    public String getTaskTag(){
-        return taskTag;
-    }
-
-    public HashMap<String, ArrayList<String>> getTaskTagsMap(){
-        return taskTagsMap;
     }
 
     public LocalDate getCreatedDate() {

@@ -180,7 +180,7 @@ public class TaskServiceTest {
     @Test
     void testDeleteTaskValidId() {
         TaskService taskService = new TaskService();
-        assertDoesNotThrow(() -> taskService.deleteTask(13));
+        assertDoesNotThrow(() -> taskService.deleteTask(14));
     }
 
     @Test
@@ -202,7 +202,7 @@ public class TaskServiceTest {
     void testCreateTaskTag(){
         TaskService taskService = new TaskService();
 
-        assertDoesNotThrow(() -> taskService.createTaskTag(7, "Habit"));
+        assertDoesNotThrow(() -> taskService.createTaskTag(13, "Validator"));
     }
 
     @Test
@@ -238,7 +238,7 @@ public class TaskServiceTest {
     void testCreateSubTask(){
         TaskService taskService = new TaskService();
 
-        assertDoesNotThrow(() -> taskService.createSubTask(1, "Create Getters and Setters"));
+        assertDoesNotThrow(() -> taskService.createSubTask(13, "Create Getters and Setters"));
     }
 
     @Test
