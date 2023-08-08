@@ -129,18 +129,18 @@ public class Task {
     @Override
     public String toString() {
         return "Task{" +
-                "taskId=" + taskId +
-                ", taskName='" + taskName + '\'' +
-                ", taskDescription='" + taskDescription + '\'' +
-                ", dueDate=" + dueDate +
-                ", priority='" + priority + '\'' +
-                ", taskStatus='" + taskStatus + '\'' +
-                ", taskNotes='" + taskNotes + '\'' +
-                ", reminder=" + reminder +
-                ", taskTag='" + taskTag + '\'' +
-                ", createdLocalDate=" + createdLocalDate +
-                ", createdTime=" + createdTime +
-                '}';
+                "\n    taskId=" + taskId +
+                ",\n    taskName='" + taskName + '\'' +
+                ",\n    taskDescription='" + taskDescription + '\'' +
+                ",\n    dueDate=" + dueDate +
+                ",\n    priority='" + priority + '\'' +
+                ",\n    taskStatus='" + taskStatus + '\'' +
+                ",\n    taskNotes='" + taskNotes + '\'' +
+                ",\n    reminder=" + reminder +
+                ",\n    createdLocalDate=" + createdLocalDate +
+                ",\n    createdTime=" + createdTime +
+                '\n' + '}';
     }
+
 }
 

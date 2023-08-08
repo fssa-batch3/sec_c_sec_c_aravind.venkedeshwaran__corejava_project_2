@@ -117,10 +117,7 @@
                     <version>3.9.0.2155</version> <!-- Check for the latest
 					version on the Maven Central repository -->
                 </plugin>
-
             </plugins>
         </pluginManagement>
     </build>
-
-
 </project>

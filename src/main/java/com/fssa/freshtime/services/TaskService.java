@@ -57,6 +57,11 @@ public class TaskService {
         return TaskDAO.readTaskTags();
     }
 
+    public boolean updateTaskTag(String tagName, int taskId) throws DAOException, InvalidInputException{
+        if(TaskValidator.validateTag(tagName)) return TaskDAO.updateTagName(tagName, taskId);
+        return false;
+    }
+
     public boolean createSubTask(int taskId, String subTask)  throws DAOException, InvalidInputException {
         if(TaskValidator.validateTaskName(subTask)) return TaskDAO.createSubtask(taskId, subTask);
         return false;
@@ -64,6 +69,11 @@ public class TaskService {
 
     public ArrayList<ArrayList<String>> readTaskWithSubTask() throws DAOException{
         return TaskDAO.readSubTask();
+    }
+
+    public boolean updateSubTask(String subtask, int taskId) throws DAOException, InvalidInputException{
+        if (TaskValidator.validateTaskName(subtask)) return TaskDAO.updateSubtask(subtask, taskId);
+        return false;
     }
 
 }

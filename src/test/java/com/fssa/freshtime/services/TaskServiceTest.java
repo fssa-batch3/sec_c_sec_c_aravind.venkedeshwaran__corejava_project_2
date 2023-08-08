@@ -228,10 +228,17 @@ public class TaskServiceTest {
     }
 
     @Test
+    void testUpdateTaskTag(){
+        TaskService taskService = new TaskService();
+        assertDoesNotThrow(() -> taskService.updateTaskTag("Updated Task", 3));
+    }
+
+
+    @Test
     void testCreateSubTask(){
         TaskService taskService = new TaskService();
 
-        assertDoesNotThrow(() -> taskService.createSubTask(1, "Create toString()"));
+        assertDoesNotThrow(() -> taskService.createSubTask(1, "Create Getters and Setters"));
     }
 
     @Test
@@ -249,11 +256,18 @@ public class TaskServiceTest {
                     System.out.print(row);
                 }
                 System.out.println();
+
             }
         }
         catch (DAOException e) {
             fail("An DAOException occurred: " + e.getMessage());
         }
+    }
+
+    @Test
+    void testUpdateSubTask(){
+        TaskService taskService = new TaskService();
+        assertDoesNotThrow(() -> taskService.updateSubTask("Updated Sub Task", 1));
     }
 
 }

@@ -31,4 +31,13 @@ public class ConnectionUtil {
         }
         return con;
     }
+
+    private static final String DB_URL = "jdbc:mysql://:3306/freshtime";
+    private static final String DB_USER = "root";
+    private static final String DB_PASSWORD = "root";
+
+    public static Connection getMyConnection() throws SQLException {
+
+        return DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+    }
 }

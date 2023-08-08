@@ -38,7 +38,7 @@ SELECT * FROM tasks;
 
 
 INSERT INTO taskTags (taskId, tagName) VALUES (1, 'task'), (2, 'task'), (3, 'task'), (4, 'task'), (5, 'task'), (6, 'task'), (7, 'habit'), (8, 'habit'), (9, 'habit'), (10, 'habit'), (11, 'habit'), (12, 'habit');
-
+--
 --SELECT
 --     t.taskId,
 --    t.taskName,
@@ -56,7 +56,16 @@ INSERT INTO taskTags (taskId, tagName) VALUES (1, 'task'), (2, 'task'), (3, 'tas
 --JOIN
 --    taskTags tt ON t.taskId = tt.taskId;
 
-SELECT * FROM taskTags; 
+SELECT * FROM taskTags;
+
+CREATE TABLE subTasks (
+    tagId INT AUTO_INCREMENT PRIMARY KEY,
+    taskId INT,
+    subtask VARCHAR(50),
+    FOREIGN KEY (taskId) REFERENCES tasks(taskId)
+);
+
+SELECT * FROM subTasks;
 
 
     
