@@ -15,7 +15,7 @@ import java.util.HashMap;
 public class TaskDAO {
 
     public static boolean createTask(Task task) throws DAOException {
-        try (Connection connection = ConnectionUtil.getMyConnection()) {
+        try (Connection connection = ConnectionUtil.getConnection()) {
             String insertQuery = "INSERT INTO tasks (taskId, taskName, taskDescription, dueDate, priority, " +
                     "taskStatus, taskNotes, reminder, createdDate, createdTime) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             try (PreparedStatement psmt = connection.prepareStatement(insertQuery)) {
@@ -40,7 +40,7 @@ public class TaskDAO {
     }
 
     public static ArrayList<Task> readTask() throws DAOException {
-        try (Connection connection = ConnectionUtil.getMyConnection()) {
+        try (Connection connection = ConnectionUtil.getConnection()) {
             String selectQuery = "SELECT * FROM tasks";
             try (PreparedStatement psmt = connection.prepareStatement(selectQuery)) {
                 try (ResultSet rs = psmt.executeQuery()) {
@@ -68,7 +68,7 @@ public class TaskDAO {
     }
 
     public static ArrayList<Integer> getAllIds() throws DAOException{
-        try (Connection connection = ConnectionUtil.getMyConnection()) {
+        try (Connection connection = ConnectionUtil.getConnection()) {
             String selectQuery = "SELECT taskId FROM tasks";
             try (PreparedStatement psmt = connection.prepareStatement(selectQuery)) {
                 try (ResultSet rs = psmt.executeQuery()) {
@@ -87,7 +87,7 @@ public class TaskDAO {
 
 
     public static boolean updateTaskAttribute(int taskId, String attributeName, Object attributeValue) throws DAOException {
-        try (Connection connection = ConnectionUtil.getMyConnection()) {
+        try (Connection connection = ConnectionUtil.getConnection()) {
             String updateQuery = "UPDATE tasks SET " + attributeName + "=? WHERE taskId=?";
             try (PreparedStatement psmt = connection.prepareStatement(updateQuery)) {
                 if (attributeValue instanceof String) {
@@ -116,7 +116,7 @@ public class TaskDAO {
 
 
     public static boolean deleteTask(int taskId) throws DAOException {
-        try (Connection connection = ConnectionUtil.getMyConnection()) {
+        try (Connection connection = ConnectionUtil.getConnection()) {
             String deleteQuery = "DELETE FROM tasks WHERE taskId=?";
             try (PreparedStatement psmt = connection.prepareStatement(deleteQuery)) {
                 psmt.setInt(1, taskId);
@@ -130,7 +130,7 @@ public class TaskDAO {
     }
 
     public static boolean createTags(int taskId, String tag) throws DAOException {
-        try (Connection connection = ConnectionUtil.getMyConnection()) {
+        try (Connection connection = ConnectionUtil.getConnection()) {
             String insertQuery = "INSERT INTO taskTags (taskId, tagName) VALUES (?, ?)";
             try (PreparedStatement psmt = connection.prepareStatement(insertQuery)) {
                 psmt.setInt(1, taskId);
@@ -148,7 +148,7 @@ public class TaskDAO {
     public static ArrayList<ArrayList<String>> readTaskTags() throws DAOException {
         ArrayList<ArrayList<String>> taskTagList = new ArrayList<>();
 
-        try (Connection connection = ConnectionUtil.getMyConnection()) {
+        try (Connection connection = ConnectionUtil.getConnection()) {
             String selectQuery = "SELECT tasks.taskId, tasks.taskName, taskTags.tagName " +
                     "FROM tasks " +
                     "LEFT JOIN taskTags ON tasks.taskId = taskTags.taskId";
@@ -171,7 +171,7 @@ public class TaskDAO {
     }
 
     public static boolean updateTagName(String tagName, int taskId) throws DAOException {
-        try (Connection connection = ConnectionUtil.getMyConnection()) {
+        try (Connection connection = ConnectionUtil.getConnection()) {
             String updateQuery = "UPDATE taskTags SET tagName =? WHERE taskId=?";
             try (PreparedStatement psmt = connection.prepareStatement(updateQuery)) {
                 psmt.setString(1, tagName);
@@ -188,7 +188,7 @@ public class TaskDAO {
     }
 
     public static boolean createSubtask(int taskId, String subTaskName) throws DAOException{
-        try (Connection connection = ConnectionUtil.getMyConnection()) {
+        try (Connection connection = ConnectionUtil.getConnection()) {
             String insertQuery = "INSERT INTO subTasks (taskId, subtask) VALUES (?, ?)";
             try (PreparedStatement psmt = connection.prepareStatement(insertQuery)) {
                 psmt.setInt(1, taskId);
@@ -205,7 +205,7 @@ public class TaskDAO {
     public static ArrayList<ArrayList<String>> readSubTask() throws DAOException {
         ArrayList<ArrayList<String>> taskWithSubTaskList = new ArrayList<>();
 
-        try (Connection connection = ConnectionUtil.getMyConnection()) {
+        try (Connection connection = ConnectionUtil.getConnection()) {
             String selectQuery = "SELECT tasks.taskId, tasks.taskName, subTasks.subtask " +
                     "FROM tasks " +
                     "LEFT JOIN subTasks ON tasks.taskId = subTasks.taskId";
@@ -228,7 +228,7 @@ public class TaskDAO {
     }
 
     public static boolean updateSubtask(String subtask, int taskId) throws DAOException {
-        try (Connection connection = ConnectionUtil.getMyConnection()) {
+        try (Connection connection = ConnectionUtil.getConnection()) {
             String updateQuery = "UPDATE subTasks SET subtask = ? WHERE taskId = ?";
             try (PreparedStatement psmt = connection.prepareStatement(updateQuery)) {
                 psmt.setString(1, subtask);
