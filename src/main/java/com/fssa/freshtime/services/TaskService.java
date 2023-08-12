@@ -1,5 +1,6 @@
 package com.fssa.freshtime.services;
 
+import com.fssa.freshtime.dao.ProgressDAO;
 import com.fssa.freshtime.dao.TaskDAO;
 import com.fssa.freshtime.enums.TaskStatus;
 import com.fssa.freshtime.exceptions.DAOException;
@@ -76,7 +77,7 @@ public class TaskService {
     }
 
     public boolean changeTaskStatus(TaskStatus taskStatus, int taskId) throws DAOException{
-        return TaskDAO.changeTaskStatus(taskStatus, taskId);
+        return ProgressDAO.changeTaskStatus(taskStatus, taskId);
     }
 
 }

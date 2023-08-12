@@ -277,10 +277,12 @@ public class TaskServiceTest {
     void testChangeTaskStatusAndInsertDailyProgress() throws DAOException {
         TaskService taskService = new TaskService();
 
-        boolean result = taskService.changeTaskStatus(TaskStatus.COMPLETED, 7);
+        boolean result = taskService.changeTaskStatus(TaskStatus.COMPLETED, 6);
 
         assertTrue(result);
     }
+
+
 
 
 }
