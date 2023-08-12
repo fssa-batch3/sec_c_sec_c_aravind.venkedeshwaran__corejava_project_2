@@ -9,6 +9,4 @@ public enum TaskStatus {
     CANCELLED;
 }
 
-// TODO don't use string for enums
-
 

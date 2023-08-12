@@ -1,6 +1,9 @@
 package com.fssa.freshtime.models;
 
 
+import com.fssa.freshtime.enums.TaskPriority;
+import com.fssa.freshtime.enums.TaskStatus;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.time.*;
@@ -14,12 +17,13 @@ public class Task {
     private String taskName;
     private String taskDescription;
     private LocalDate dueDate;
-    private String priority;
-    private String taskStatus;
+    private TaskPriority priority;
+    private TaskStatus taskStatus;
     private String taskNotes;
     private LocalDateTime reminder;
     private LocalDate createdLocalDate;
     private LocalDateTime createdTime;
+    private LocalDateTime statusUpdatedTime;
 
 //    default constructor
     public Task(){
@@ -64,19 +68,19 @@ public class Task {
         this.dueDate = dueLocalDate;
     }
 
-    public String getPriority() {
+    public TaskPriority getPriority() {
         return priority;
     }
 
-    public void setPriority(String priority) {
+    public void setPriority(TaskPriority priority) {
         this.priority = priority;
     }
 
-    public String getTaskStatus() {
+    public TaskStatus getTaskStatus() {
         return taskStatus;
     }
 
-    public void setTaskStatus(String taskStatus) {
+    public void setTaskStatus(TaskStatus taskStatus) {
         this.taskStatus = taskStatus;
     }
 
@@ -110,6 +114,14 @@ public class Task {
 
     public void setCreatedTime(LocalDateTime createdTime) {
         this.createdTime = createdTime;
+    }
+
+    public LocalDateTime getStatusUpdatedTime() {
+        return statusUpdatedTime;
+    }
+
+    public void setStatusUpdatedTime(LocalDateTime statusUpdatedTime) {
+        this.statusUpdatedTime = statusUpdatedTime;
     }
 
     @Override

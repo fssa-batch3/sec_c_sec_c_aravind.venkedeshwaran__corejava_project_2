@@ -23,8 +23,6 @@ public class TaskValidator {
         validateTaskName(task.getTaskName());
         validateTaskDescription(task.getTaskDescription());
         validateDueDate(task.getDueDate());
-        validatePriority(task.getPriority());
-        validateStatus(task.getTaskStatus());
         validateTaskNotes(task.getTaskNotes());
         validateReminder(task.getReminder());
         validateCreatedDate(task.getCreatedDate());
@@ -71,52 +69,6 @@ public class TaskValidator {
             throw new InvalidInputException(TaskErrors.INVALID_DUEDATE);
         }
         return true;
-    }
-
-    /**
-     * Validates the task priority.
-     *
-     * @param taskpriority The task priority to be validated.
-     * @return true if the priority is valid, throws an InvalidInputException if invalid.
-     */
-    public static boolean validatePriority(String taskpriority) throws InvalidInputException {
-        taskpriority = taskpriority.trim().toUpperCase();
-
-        boolean isValid = false;
-        for (TaskPriority priority : TaskPriority.values()) {
-            if (taskpriority.equals(priority.name())) {
-                isValid = true;
-                break;
-            }
-        }
-
-        if (!isValid) throw new InvalidInputException(TaskErrors.INVALID_PRIORITY);
-        else return true;
-    }
-
-    /**
-     * Validates the task status.
-     *
-     * @param taskStatus The task status to be validated.
-     * @return true if the status is valid, throws an InvalidInputException if invalid.
-     */
-    public static boolean validateStatus(String taskStatus) throws InvalidInputException {
-        // Trim the input and replace all white space with empty and making it uppercase to match with the enums
-        taskStatus = taskStatus.trim().toUpperCase().replaceAll("\\s+", "");
-
-        boolean isValid = false;
-        for (TaskStatus status : TaskStatus.values()) {
-            if (taskStatus.equals(status.name())) {
-                isValid = true;
-                break;
-            }
-        }
-
-        if (!isValid) {
-            throw new InvalidInputException(TaskErrors.INVALID_STATUS);
-        } else {
-            return true;
-        }
     }
 
 

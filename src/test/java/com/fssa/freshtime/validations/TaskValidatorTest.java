@@ -1,5 +1,7 @@
 package com.fssa.freshtime.validations;
 
+import com.fssa.freshtime.enums.TaskPriority;
+import com.fssa.freshtime.enums.TaskStatus;
 import com.fssa.freshtime.errors.TaskErrors;
 import com.fssa.freshtime.exceptions.InvalidInputException;
 import org.junit.jupiter.api.Test;
@@ -14,76 +16,26 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class TaskValidatorTest {
 
+
+    Task getTask() {
+        Task task = new Task();
+
+        task.setTaskName("Write testcase for the validator");
+        task.setTaskDescription("Write testcase for the validator, test one valid input and two or three invalid input");
+        task.setDueDate(LocalDate.now().plusDays(1));
+        task.setPriority(TaskPriority.HIGH);
+        task.setTaskStatus(TaskStatus.NOTSTARTED);
+        task.setTaskNotes("Write testcase for the validator, test one valid input and two or three invalid input");
+        task.setReminder(LocalDateTime.now().plusDays(1).plusMinutes(30));
+
+        return task;
+    }
+
     @Test
     void valid_task_with_valid_input() {
-        Task task = new Task();
-        task.setTaskName("Test Task");
-        task.setTaskDescription("TestCase for sample task");
-        task.setDueDate(LocalDate.now().plusDays(5));
-        task.setPriority("High");
-        task.setTaskStatus("In Progress");
-        task.setTaskNotes("This is the sample note for test task");
-        task.setReminder(LocalDateTime.now().plusMinutes(30));
-
+        Task task = getTask();
         assertDoesNotThrow(() -> TaskValidator.validate(task));
     }
-
-    @Test
-    void invalid_task_with_invalid_taskName() {
-        Task task = new Task();
-        task.setTaskName("Do");
-        task.setTaskDescription("TestCase for sample task");
-        task.setDueDate(LocalDate.now().plusDays(5));
-        task.setPriority("High");
-        task.setTaskStatus("In Progress");
-        task.setTaskNotes("This is the sample note for test task");
-        task.setReminder(LocalDateTime.now().plusMinutes(30));
-
-        assertThrows(InvalidInputException.class, () -> TaskValidator.validate(task));
-    }
-
-    @Test
-    void invalid_task_with_invalid_dueDate() {
-        Task task = new Task();
-        task.setTaskName("Do");
-        task.setTaskDescription("TestCase for sample task");
-        task.setDueDate(LocalDate.now().minusDays(1));
-        task.setPriority("High");
-        task.setTaskStatus("In Progress");
-        task.setTaskNotes("This is the sample note for test task");
-        task.setReminder(LocalDateTime.now().plusMinutes(30));
-
-        assertThrows(InvalidInputException.class, () -> TaskValidator.validate(task));
-    }
-
-    @Test
-    void invalid_task_with_invalid_status() {
-        Task task = new Task();
-        task.setTaskName("Do");
-        task.setTaskDescription("TestCase for sample task");
-        task.setDueDate(LocalDate.now().plusDays(5));
-        task.setPriority("Waste Of Time");
-        task.setTaskStatus("In Progress");
-        task.setTaskNotes("This is the sample note for test task");
-        task.setReminder(LocalDateTime.now().plusMinutes(30));
-
-        assertThrows(InvalidInputException.class, () -> TaskValidator.validate(task));
-    }
-
-    @Test
-    void invalid_task_with_invalid_reminder() {
-        Task task = new Task();
-        task.setTaskName("Do");
-        task.setTaskDescription("TestCase for sample task");
-        task.setDueDate(LocalDate.now().plusDays(5));
-        task.setPriority("High");
-        task.setTaskStatus("In Progress");
-        task.setTaskNotes("This is the sample note for test task");
-        task.setReminder(LocalDateTime.now());
-
-        assertThrows(InvalidInputException.class, () -> TaskValidator.validate(task));
-    }
-
 
     @Test
     void test_valid_task_name() {
@@ -125,6 +77,7 @@ class TaskValidatorTest {
         assertThrows(InvalidInputException.class, () -> TaskValidator.validateTaskDescription("Efficiently manage your tasks with our user-friendly to-do application. Organize, prioritize, and track your daily activities with due dates, reminders, and task notes, ensuring you stay on top of everything effortlessly. Increase productivity and achieve your goals with our feature-rich to-do app designed to simplify task management and keep you focused on what matters most."), TaskErrors.INVALID_TASK_DESCRIPTION);
     }
 
+
     @Test
     void test_valid_due_date_with_today_date() {
         LocalDate today = LocalDate.now();
@@ -152,76 +105,6 @@ class TaskValidatorTest {
         LocalDate tenDaysBeforeToday = today.minusDays(10);// Minus 10 days to the current date
 
         assertThrows(InvalidInputException.class, () -> TaskValidator.validateDueDate(tenDaysBeforeToday), TaskErrors.INVALID_DUEDATE);
-    }
-
-    @Test
-    void test_valid_priority_high() {
-        assertDoesNotThrow(() -> TaskValidator.validatePriority("High"));
-    }
-
-    @Test
-    void test_valid_priority_medium() {
-        assertDoesNotThrow(() -> TaskValidator.validatePriority("Medium"));
-    }
-
-    @Test
-    void test_valid_priority_low() {
-        assertDoesNotThrow(() -> TaskValidator.validatePriority("Low"));
-    }
-
-    @Test
-    void test_invalid_priority() {
-        assertThrows(InvalidInputException.class, () -> TaskValidator.validatePriority("Very Important"), TaskErrors.INVALID_PRIORITY);
-    }
-
-    @Test
-    void test_invalid_priority_with_empty_space() {
-        assertThrows(InvalidInputException.class, () -> TaskValidator.validatePriority(""), TaskErrors.INVALID_PRIORITY);
-    }
-
-    @Test
-    void test_invalid_priority_with_numbers() {
-        assertThrows(InvalidInputException.class, () -> TaskValidator.validatePriority("124"), TaskErrors.INVALID_PRIORITY);
-    }
-
-    @Test
-    void test_valid_status_Not_started(){
-        assertDoesNotThrow(() -> TaskValidator.validateStatus("Not started"));
-    }
-
-    @Test
-    void test_valid_status_Scheduled(){
-        assertDoesNotThrow(() -> TaskValidator.validateStatus("Scheduled"));
-    }
-
-    @Test
-    void test_valid_status_In_progress(){
-        assertDoesNotThrow(() -> TaskValidator.validateStatus("In progress"));
-    }
-
-    @Test
-    void test_valid_status_Overdue(){
-        assertDoesNotThrow(() -> TaskValidator.validateStatus("Overdue"));
-    }
-
-    @Test
-    void test_valid_status_Completed(){
-        assertDoesNotThrow(() -> TaskValidator.validateStatus("Completed"));
-    }
-
-    @Test
-    void test_valid_status_Cancelled(){
-        assertDoesNotThrow(() -> TaskValidator.validateStatus("Cancelled"));
-    }
-
-    @Test
-    void test_invalid_status_not_important(){
-        assertThrows(InvalidInputException.class, () -> TaskValidator.validateStatus("Not Important"), TaskErrors.INVALID_STATUS);
-    }
-
-    @Test
-    void test_invalid_status_waste_of_time(){
-        assertThrows(InvalidInputException.class, () -> TaskValidator.validateStatus("Waste Of Time"), TaskErrors.INVALID_STATUS);
     }
 
     @Test
@@ -338,59 +221,4 @@ class TaskValidatorTest {
         LocalDateTime created_after_thirty_min = currentDateTime.plusMinutes(1);
         assertThrows(InvalidInputException.class, () -> TaskValidator.validateCreatedTime(created_after_thirty_min), TaskErrors.INVALID_CREATEDTIME);
     }
-
-//    @Test
-//    void testAddTaskTag() {
-//        Task task = new Task();
-//
-//        String taskName = "Urgent Task Tag Task";
-//        task.setTaskName(taskName);
-//
-//        String taskTag = "Test Case";
-//        task.setTag(taskTag);
-//
-//        task.setTaskDescription("TestCase for sample task");
-//        task.setDueDate(LocalDate.now().plusDays(5));
-//        task.setPriority("High");
-//        task.setTaskStatus("In Progress");
-//        task.setTaskNotes("This is the sample note for test task");
-//        task.setReminder(LocalDateTime.now().plusMinutes(30));
-//
-//
-//        HashMap<String, ArrayList<String>> taskTagsMap = task.getTaskTagsMap();
-//        assertTrue(taskTagsMap.containsKey(taskTag));
-//        assertTrue(taskTagsMap.get(taskTag).contains(taskName));
-//        System.out.println(task.getTaskTagsMap());
-//
-//    }
-//
-//    @Test
-//    void testAddingMultipleTaskInSingleTag() {
-//        Task task1 = new Task();
-//        String task1Name = "Urgent Task Tag Task";
-//        task1.setTaskName(task1Name);
-//        String task1Tag = "Test Case";
-//        task1.setTag(task1Tag);
-//
-//        Task task2 = new Task();
-//        String task2Name = "Another Urgent Task Tag Task";
-//        task2.setTaskName(task2Name);
-//        String task2Tag = "Test Case";
-//        task2.setTag(task2Tag);
-//
-//
-//
-//        HashMap<String, ArrayList<String>> taskTagsMap = task2.getTaskTagsMap();
-//
-//        assertTrue(taskTagsMap.containsKey(task1Tag));
-//        assertTrue(taskTagsMap.containsKey(task2Tag));
-//
-//        assertTrue(taskTagsMap.get(task1Tag).contains(task1Name));
-//        assertTrue(taskTagsMap.get(task2Tag).contains(task2Name));
-//
-//        System.out.println(task2.getTaskTagsMap());
-//
-//    }
-
-
 }

@@ -1,5 +1,8 @@
 package com.fssa.freshtime.services;
 
+import com.fssa.freshtime.dao.TaskDAO;
+import com.fssa.freshtime.enums.TaskPriority;
+import com.fssa.freshtime.enums.TaskStatus;
 import com.fssa.freshtime.exceptions.DAOException;
 import com.fssa.freshtime.exceptions.InvalidInputException;
 import com.fssa.freshtime.models.Task;
@@ -20,8 +23,8 @@ public class TaskServiceTest {
         task.setTaskName("Write testcase for the validator");
         task.setTaskDescription("Write testcase for the validator, test one valid input and two or three invalid input");
         task.setDueDate(LocalDate.now().plusDays(1));
-        task.setPriority("High");
-        task.setTaskStatus("In progress");
+        task.setPriority(TaskPriority.HIGH);
+        task.setTaskStatus(TaskStatus.INPROGRESS);
         task.setTaskNotes("Write testcase for the validator, test one valid input and two or three invalid input");
         task.setReminder(LocalDateTime.now().plusDays(1).plusMinutes(30));
 
@@ -230,7 +233,7 @@ public class TaskServiceTest {
     @Test
     void testUpdateTaskTag(){
         TaskService taskService = new TaskService();
-        assertDoesNotThrow(() -> taskService.updateTaskTag("Updated Task", 3));
+        assertDoesNotThrow(() -> taskService.updateTaskTag("Another Task", 1));
     }
 
 
@@ -267,7 +270,17 @@ public class TaskServiceTest {
     @Test
     void testUpdateSubTask(){
         TaskService taskService = new TaskService();
-        assertDoesNotThrow(() -> taskService.updateSubTask("Updated Sub Task", 1));
+        assertDoesNotThrow(() -> taskService.updateSubTask("Another Sub Task", 2));
     }
+
+    @Test
+    void testChangeTaskStatusAndInsertDailyProgress() throws DAOException {
+        TaskService taskService = new TaskService();
+
+        boolean result = taskService.changeTaskStatus(TaskStatus.COMPLETED, 7);
+
+        assertTrue(result);
+    }
+
 
 }

@@ -1,6 +1,7 @@
 package com.fssa.freshtime.services;
 
 import com.fssa.freshtime.dao.TaskDAO;
+import com.fssa.freshtime.enums.TaskStatus;
 import com.fssa.freshtime.exceptions.DAOException;
 import com.fssa.freshtime.exceptions.InvalidInputException;
 import com.fssa.freshtime.models.Task;
@@ -28,8 +29,6 @@ public class TaskService {
                 case "taskName" -> TaskValidator.validateTaskName((String) attributeValue);
                 case "taskDescription" -> TaskValidator.validateTaskDescription((String) attributeValue);
                 case "dueDate" -> TaskValidator.validateDueDate((LocalDate) attributeValue);
-                case "priority" -> TaskValidator.validatePriority((String) attributeValue);
-                case "taskStatus" -> TaskValidator.validateStatus((String) attributeValue);
                 case "taskNotes" -> TaskValidator.validateTaskNotes((String) attributeValue);
                 case "reminder" -> TaskValidator.validateReminder((LocalDateTime) attributeValue);
                 default -> throw new InvalidInputException("Invalid attribute name");
@@ -71,9 +70,13 @@ public class TaskService {
         return TaskDAO.readSubTask();
     }
 
-    public boolean updateSubTask(String subtask, int taskId) throws DAOException, InvalidInputException{
-        if (TaskValidator.validateTaskName(subtask)) return TaskDAO.updateSubtask(subtask, taskId);
+    public boolean updateSubTask(String subtask, int subtaskId) throws DAOException, InvalidInputException{
+        if (TaskValidator.validateTaskName(subtask)) return TaskDAO.updateSubtask(subtask, subtaskId);
         return false;
+    }
+
+    public boolean changeTaskStatus(TaskStatus taskStatus, int taskId) throws DAOException{
+        return TaskDAO.changeTaskStatus(taskStatus, taskId);
     }
 
 }
