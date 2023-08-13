@@ -9,7 +9,7 @@ import java.sql.SQLException;
 
 public class UserDAO {
     public boolean userRegistration(String emailId, String userName, String password) throws DAOException{
-        try (Connection connection = ConnectionUtil.getMyConnection()) {
+        try (Connection connection = ConnectionUtil.getConnection()) {
 
             String insertQuery = "INSERT INTO users (emailId, userName, password) VALUES (?, ?, ?)";
             try (PreparedStatement psmt = connection.prepareStatement(insertQuery)) {
@@ -27,7 +27,7 @@ public class UserDAO {
     }
 
     public boolean userLogin(String emailId, String password) throws DAOException {
-        try (Connection connection = ConnectionUtil.getMyConnection()) {
+        try (Connection connection = ConnectionUtil.getConnection()) {
 
             String selectQuery = "SELECT COUNT(*) FROM users WHERE emailId = ? AND password = ?";
             try (PreparedStatement psmt = connection.prepareStatement(selectQuery)) {
@@ -50,7 +50,7 @@ public class UserDAO {
     }
 
     public boolean forgotPassword(String emailId, String password) throws DAOException{
-        try (Connection connection = ConnectionUtil.getMyConnection()) {
+        try (Connection connection = ConnectionUtil.getConnection()) {
 
             String updateQuery = "UPDATE users SET password = ? WHERE emailId = ?";
             try (PreparedStatement psmt = connection.prepareStatement(updateQuery)) {
@@ -68,7 +68,7 @@ public class UserDAO {
     }
 
     public boolean deleteUser(String emailId, String password) throws DAOException {
-        try (Connection connection = ConnectionUtil.getMyConnection()) {
+        try (Connection connection = ConnectionUtil.getConnection()) {
 
             String deleteQuery = "DELETE FROM users WHERE emailId = ? AND password = ?";
             try (PreparedStatement psmt = connection.prepareStatement(deleteQuery)) {
