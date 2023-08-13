@@ -4,7 +4,6 @@ public class User {
     private String emailId;
     private String userName;
     private String password;
-    private String phoneNumber;
 
 
     public String getEmailId() {
@@ -30,15 +29,5 @@ public class User {
     public void setPassword(String password) {
         this.password = password;
     }
-
-    public String getPhoneNo() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNo(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
-
 
 }

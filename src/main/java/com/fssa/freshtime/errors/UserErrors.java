@@ -12,4 +12,5 @@ public class UserErrors {
             It contains at least one special character.
             It does’t contain any white space.""";
     public static final String INVALID_PHONE_NUMBER = "Invalid Phone Number: Phone Number can not be null or empty. It must have 10 digits.";
+    public static final String INVALID_USER_NULL = "INVALID USER: User can not be null";
 }

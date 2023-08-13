@@ -134,7 +134,6 @@ public class TaskDAO {
                 psmt.setInt(2, taskId);
 
                 int rowAffected = psmt.executeUpdate();
-                System.out.println("No.Of Rows Affected: " + rowAffected);
                 return rowAffected > 0;
             }
         } catch (SQLException e) {

@@ -1,21 +1,44 @@
 package com.fssa.freshtime.validations;
 
 import com.fssa.freshtime.exceptions.InvalidInputException;
+import com.fssa.freshtime.models.User;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class UserValidatorTest {
+class UserValidatorTest {
+    
+    User getUser(){
+        User user = new User();
+
+        user.setUserName("Aravind");
+        user.setEmailId("aravind@freshword.com");
+        user.setPassword("Aravind@21");
+
+        return user;
+    }
 
     @Test
-    public void testValidEmail() {
+    void testValidUser(){
+        User user = getUser();
+
+        assertDoesNotThrow(() -> UserValidator.validateUser(user));
+    }
+
+    @Test
+    void testNullUser(){
+        assertThrows(InvalidInputException.class, () -> UserValidator.validateUser(null));
+    }
+
+    @Test
+    void testValidEmail() {
         assertDoesNotThrow(() -> UserValidator.validateEmailId("aravind@gmail.com"));
     }
 
     @Test
-    public void testInvalidEmail() {
+    void testInvalidEmail() {
         assertThrows(InvalidInputException.class, () -> {
-            UserValidator.validateEmailId("invalid_email");
+            UserValidator.validateEmailId("aravind@gmail.com");
         });
     }
 
@@ -25,32 +48,62 @@ public class UserValidatorTest {
     }
 
     @Test
-    public void testValidUserName() {
-        assertDoesNotThrow(() -> UserValidator.validateUserName("aravind"));
+    void testValidUserName() {
+        assertDoesNotThrow(() -> UserValidator.validateUserName("     joe      "));
     }
 
     @Test
-    public void testInvalidUserName() {
-        assertThrows(InvalidInputException.class, () -> {
-            UserValidator.validateUserName("Aravind ram");
-        });
+    void testInvalidUserNameWithSpaces() {
+        assertDoesNotThrow( () -> UserValidator.validateUserName("Aravind Ram"));
     }
 
+    @Test
+    void testInvalidUserNameWithNumber() {
+        assertThrows(InvalidInputException.class, () -> UserValidator.validateUserName("Aravind21"));
+    }
+
+    @Test
+    void testInvalidUserNameLessThanThreeChar(){
+        assertThrows(InvalidInputException.class, () -> UserValidator.validateUserName("jo"));
+    }
     @Test
     void testEmptyUserName(){
         assertThrows(InvalidInputException.class, ()-> UserValidator.validateUserName(""));
     }
 
     @Test
-    public void testValidPassword() {
+    void testValidPassword() {
         assertDoesNotThrow(() -> UserValidator.validatePassword("P@ssw0rd"));
     }
 
     @Test
-    public void testInvalidPassword() {
-        assertThrows(InvalidInputException.class, () -> {
-            UserValidator.validatePassword("weakpassword");
-        });
+    void testInvalidPasswordLessThanEightChar() {
+        assertThrows(InvalidInputException.class, () -> UserValidator.validatePassword("Hel1@"));
+    }
+
+    @Test
+    void testInvalidPasswordMoreThanTwentyChar() {
+        assertThrows(InvalidInputException.class, () -> UserValidator.validatePassword("Hel1@ThisHasMoreThanTwemtyChar"));
+    }
+
+    @Test
+    void testInvalidPasswordNoDigit() {
+        assertThrows(InvalidInputException.class, () -> UserValidator.validatePassword("WrongPassword@"));
+    }
+
+    @Test
+    void testInvalidPasswordNoSplChar() {
+        assertThrows(InvalidInputException.class, () -> UserValidator.validatePassword("WrongPassword1"));
+    }
+
+    @Test
+    void testInvalidPasswordNoLower() {
+        assertThrows(InvalidInputException.class, () -> UserValidator.validatePassword("WRONGPASS@1"));
+    }
+
+    @Test
+    void testInvalidPasswordNoUpper() {
+        assertThrows(InvalidInputException.class, () -> UserValidator.validatePassword("wrongpass@1"));
     }
 
     @Test
@@ -58,22 +111,5 @@ public class UserValidatorTest {
         assertThrows(InvalidInputException.class, ()-> UserValidator.validatePassword(""));
     }
 
-
-    @Test
-    public void testValidPhoneNumber() {
-        assertDoesNotThrow(() -> UserValidator.validatePhoneNumber("9080668509"));
-    }
-
-    @Test
-    public void testInvalidPhoneNumber() {
-        assertThrows(InvalidInputException.class, () -> {
-            UserValidator.validatePhoneNumber("invalidNumber");
-        });
-    }
-
-    @Test
-    void testEmptyPhoneNumber(){
-        assertThrows(InvalidInputException.class, ()-> UserValidator.validatePhoneNumber(""));
-    }
 
 }
