@@ -14,6 +14,7 @@ import java.time.*;
 public class Task {
 
     private int taskId;
+    private int userId;
     private String taskName;
     private String taskDescription;
     private LocalDate dueDate;
@@ -122,6 +123,14 @@ public class Task {
 
     public void setStatusUpdatedTime(LocalDateTime statusUpdatedTime) {
         this.statusUpdatedTime = statusUpdatedTime;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
     @Override

@@ -347,5 +347,4 @@ public class TaskDAO {
             throw new DAOException("Error while updating subtask: " + e.getMessage());
         }
     }
-
 }
