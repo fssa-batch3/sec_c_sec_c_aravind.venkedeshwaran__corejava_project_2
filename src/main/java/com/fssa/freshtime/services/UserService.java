@@ -19,7 +19,7 @@ public class UserService {
 
     }
 
-    public boolean userLogin(String emailId, String password) throws InvalidInputException, DAOException {
+    public boolean userLogin(String emailId, String password) throws InvalidInputException, DAOException, SQLException {
         UserDAO userDAO = new UserDAO();
 
         if(UserValidator.validateEmailId(emailId) && UserValidator.validatePassword(password))
@@ -37,7 +37,7 @@ public class UserService {
         return false;
     }
 
-    public boolean deleteUser(String emailId, String password) throws InvalidInputException, DAOException {
+    public boolean deleteUser(String emailId, String password) throws InvalidInputException, DAOException, SQLException {
         UserDAO userDAO = new UserDAO();
 
         if(UserValidator.validateEmailId(emailId) && UserValidator.validatePassword(password))

@@ -27,24 +27,27 @@ public class UserDAO {
         }
     }
 
-    public boolean userLogin(String emailId, String password) throws DAOException {
+    public boolean userLogin(String emailId, String password) throws DAOException, SQLException {
         try (Connection connection = ConnectionUtil.getConnection()) {
 
-            String selectQuery = "SELECT COUNT(*) FROM users WHERE emailId = ? AND password = ?";
-            try (PreparedStatement psmt = connection.prepareStatement(selectQuery)) {
+            if(emailExists(emailId, connection)) {
+                String selectQuery = "SELECT COUNT(*) FROM users WHERE emailId = ? AND password = ?";
+                try (PreparedStatement psmt = connection.prepareStatement(selectQuery)) {
 
-                psmt.setString(1, emailId);
-                psmt.setString(2, password);
+                    psmt.setString(1, emailId);
+                    psmt.setString(2, password);
 
-                try (ResultSet rs = psmt.executeQuery()) {
-                    if (rs.next()) {
-                        int count = rs.getInt(1);
-                        return count > 0;
+                    try (ResultSet rs = psmt.executeQuery()) {
+                        if (rs.next()) {
+                            int count = rs.getInt(1);
+                            return count > 0;
+                        }
                     }
                 }
             }
-        } catch (SQLException e) {
-            throw new DAOException("Error while validating user credentials: " + e.getMessage());
+            else{
+                throw new DAOException("Error while validating user credentials: Invalid Email Id" );
+            }
         }
         return false;
     }
@@ -83,20 +86,23 @@ public class UserDAO {
     }
 
 
-    public boolean deleteUser(String emailId, String password) throws DAOException {
+    public boolean deleteUser(String emailId, String password) throws DAOException, SQLException {
         try (Connection connection = ConnectionUtil.getConnection()) {
 
-            String deleteQuery = "DELETE FROM users WHERE emailId = ? AND password = ?";
-            try (PreparedStatement psmt = connection.prepareStatement(deleteQuery)) {
+            if(emailExists(emailId, connection)) {
+                String deleteQuery = "DELETE FROM users WHERE emailId = ? AND password = ?";
+                try (PreparedStatement psmt = connection.prepareStatement(deleteQuery)) {
 
-                psmt.setString(1, emailId);
-                psmt.setString(2, password);
+                    psmt.setString(1, emailId);
+                    psmt.setString(2, password);
 
-                int rowAffected = psmt.executeUpdate();
-                return rowAffected > 0;
+                    int rowAffected = psmt.executeUpdate();
+                    return rowAffected > 0;
+                }
             }
-        } catch (SQLException e) {
-            throw new DAOException("Error while deleting user: " + e.getMessage());
+            else{
+                throw new DAOException("Error while deleting user: Invalid Email Id");
+            }
         }
     }
 }

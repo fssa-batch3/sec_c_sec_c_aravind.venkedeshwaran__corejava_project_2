@@ -41,7 +41,7 @@ public class UserServiceTest {
     void testUserLoginValidInput() {
         UserService userService = new UserService();
 
-        assertDoesNotThrow(() -> userService.userLogin("aravindram@gmail.com", "Aravind@21"));
+        assertDoesNotThrow(() -> userService.userLogin("aravind@freshworks.com", "Aravind@21"));
     }
 
     @Test
@@ -69,14 +69,14 @@ public class UserServiceTest {
     void testDeleteUserValidInput() {
         UserService userService = new UserService();
 
-        assertDoesNotThrow(() -> userService.deleteUser("aravindram@gmail.com", "P@$$w0rd"));
+        assertDoesNotThrow(() -> userService.deleteUser("sample@gmail.com", "P@$$w0rd"));
     }
 
     @Test
     void testDeleteUserInvalidInput() {
         UserService userService = new UserService();
 
-        assertThrows(InvalidInputException.class, () -> userService.deleteUser("aravindram@gmail.com", "WrongPassword"));
+        assertThrows(InvalidInputException.class, () -> userService.deleteUser("sample@gmail.com", "WrongPassword"));
     }
 }
 
