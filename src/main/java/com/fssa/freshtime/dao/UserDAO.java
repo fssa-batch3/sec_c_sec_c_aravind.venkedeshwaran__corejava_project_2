@@ -38,7 +38,7 @@ public class UserDAO {
                 try (ResultSet rs = psmt.executeQuery()) {
                     if (rs.next()) {
                         int count = rs.getInt(1);
-                        return count > 0; // If count > 0, credentials are valid
+                        return count > 0;
                     }
                 }
             }
