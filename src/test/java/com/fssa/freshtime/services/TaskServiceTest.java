@@ -6,6 +6,7 @@ import com.fssa.freshtime.enums.TaskStatus;
 import com.fssa.freshtime.exceptions.DAOException;
 import com.fssa.freshtime.exceptions.InvalidInputException;
 import com.fssa.freshtime.models.Task;
+import com.fssa.freshtime.utils.Logger;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
@@ -55,7 +56,7 @@ public class TaskServiceTest {
             assertNotNull(taskList);
             assertFalse(taskList.isEmpty());
 
-            for (Task task : taskList) System.out.println(task);
+            for (Task task : taskList) Logger.info(task);
 
         } catch (DAOException e) {
             fail("An exception occurred: " + e.getMessage());
@@ -220,9 +221,9 @@ public class TaskServiceTest {
 
             for (ArrayList<String> taskWithTags : taskWithTagsList){
                 for(String row : taskWithTags){
-                    System.out.print(row);
+                    Logger.info(row);
                 }
-                System.out.println();
+                Logger.info();
             }
         }
         catch (DAOException e) {
@@ -256,9 +257,9 @@ public class TaskServiceTest {
 
             for (ArrayList<String> taskWithSubTask : taskWithSubTaskList){
                 for(String row : taskWithSubTask){
-                    System.out.print(row);
+                    Logger.info(row);
                 }
-                System.out.println();
+                Logger.info();
 
             }
         }

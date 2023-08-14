@@ -1,4 +1,4 @@
-package com.fssa.freshtime.dao;
+package com.fssa.freshtime.utils;
 
 import io.github.cdimascio.dotenv.Dotenv;
 

@@ -2,6 +2,7 @@ package com.fssa.freshtime.dao;
 
 import com.fssa.freshtime.enums.TaskStatus;
 import com.fssa.freshtime.exceptions.DAOException;
+import com.fssa.freshtime.utils.ConnectionUtil;
 
 import java.sql.*;
 import java.time.DayOfWeek;

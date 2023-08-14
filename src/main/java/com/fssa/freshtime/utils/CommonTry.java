@@ -1,10 +1,9 @@
-package com.fssa.freshtime.dao;
+package com.fssa.freshtime.utils;
 
 import com.fssa.freshtime.exceptions.DAOException;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class CommonTry {

@@ -1,6 +1,7 @@
 package com.fssa.freshtime.dao;
 
 import com.fssa.freshtime.exceptions.DAOException;
+import com.fssa.freshtime.utils.ConnectionUtil;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

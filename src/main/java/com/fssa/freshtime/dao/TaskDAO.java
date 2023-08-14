@@ -4,6 +4,7 @@ import com.fssa.freshtime.enums.TaskPriority;
 import com.fssa.freshtime.enums.TaskStatus;
 import com.fssa.freshtime.exceptions.DAOException;
 import com.fssa.freshtime.models.Task;
+import com.fssa.freshtime.utils.ConnectionUtil;
 
 import java.sql.*;
 import java.time.LocalDate;
@@ -15,6 +16,8 @@ import java.util.List;
  * Data Access Object (DAO) class for managing tasks and related data in the database.
  */
 public class TaskDAO {
+
+    public static final String taskId = "taskId";
 
     /**
      * Creates a new task in the database.
@@ -41,7 +44,7 @@ public class TaskDAO {
                 psmt.setTimestamp(10, java.sql.Timestamp.valueOf(task.getCreatedTime()));
 
                 int rowAffected = psmt.executeUpdate();
-                System.out.println("No.Of Rows Affected: " + rowAffected);
+                
                 return rowAffected > 0;
             }
         } catch (SQLException e) {
@@ -63,7 +66,7 @@ public class TaskDAO {
                     ArrayList<Task> taskList = new ArrayList<>();
                     while (rs.next()) {
                         Task task = new Task();
-                        task.setTaskId(rs.getInt("taskId"));
+                        task.setTaskId(rs.getInt(taskId));
                         task.setTaskName(rs.getString("taskName"));
                         task.setTaskDescription(rs.getString("taskDescription"));
                         task.setDueDate(rs.getDate("dueDate").toLocalDate());
@@ -97,7 +100,7 @@ public class TaskDAO {
                 try (ResultSet rs = psmt.executeQuery()) {
                     ArrayList<Integer> idList = new ArrayList<>();
                     while (rs.next()) {
-                        idList.add(rs.getInt("taskId"));
+                        idList.add(rs.getInt(taskId));
                     }
                     return idList;
                 }
@@ -197,7 +200,6 @@ public class TaskDAO {
                 psmt.setString(2, tag.toLowerCase());
 
                 int rowAffected = psmt.executeUpdate();
-                System.out.println(rowAffected);
                 return rowAffected > 0;
             }
         } catch (SQLException e) {
@@ -225,7 +227,7 @@ public class TaskDAO {
 
                 while (rs.next()) {
                     ArrayList<String> row = new ArrayList<>();
-                    row.add(rs.getInt("taskId") + " ");
+                    row.add(rs.getInt(taskId) + " ");
                     row.add(rs.getString("taskName") + " ");
                     row.add(rs.getString("tagName") + " ");
                     taskTagList.add(row);
@@ -256,7 +258,7 @@ public class TaskDAO {
                 psmt.setInt(2, taskId);
 
                 int rowAffected = psmt.executeUpdate();
-                System.out.println("No.Of Rows Affected: " + rowAffected);
+                
                 return rowAffected > 0;
             }
         } catch (SQLException e) {
@@ -282,7 +284,7 @@ public class TaskDAO {
                 psmt.setString(2, subTaskName);
 
                 int rowAffected = psmt.executeUpdate();
-                System.out.println(rowAffected);
+                
                 return rowAffected > 0;
             }
         } catch (SQLException e) {
@@ -309,7 +311,7 @@ public class TaskDAO {
 
                 while (rs.next()) {
                     ArrayList<String> row = new ArrayList<>();
-                    row.add(rs.getInt("taskId") + " ");
+                    row.add(rs.getInt(taskId) + " ");
                     row.add(rs.getString("taskName") + " ");
                     row.add(rs.getString("subtask") + " ");
                     taskWithSubTaskList.add(row);
@@ -340,7 +342,7 @@ public class TaskDAO {
                 psmt.setInt(2, subTaskId);
 
                 int rowAffected = psmt.executeUpdate();
-                System.out.println("No.Of Rows Affected: " + rowAffected);
+                
                 return rowAffected > 0;
             }
         } catch (SQLException e) {
