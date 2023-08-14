@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -51,7 +52,7 @@ public class TaskServiceTest {
     void testReadTask() throws DAOException, InvalidInputException {
         TaskService taskService = new TaskService();
         try {
-            ArrayList<Task> taskList = taskService.readAllTask();
+            List<Task> taskList = taskService.readAllTask();
 
             assertNotNull(taskList);
             assertFalse(taskList.isEmpty());
@@ -214,7 +215,7 @@ public class TaskServiceTest {
         TaskService taskService = new TaskService();
 
         try{
-            ArrayList<ArrayList<String>> taskWithTagsList = taskService.readTaskWithTags();
+            List<ArrayList<String>> taskWithTagsList = taskService.readTaskWithTags();
 
             assertNotNull(taskWithTagsList);
             assertFalse(taskWithTagsList.isEmpty());

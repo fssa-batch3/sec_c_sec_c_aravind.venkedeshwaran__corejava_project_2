@@ -11,6 +11,7 @@ import com.fssa.freshtime.validations.TaskValidator;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Service class for managing tasks in the FreshTime application.
@@ -39,7 +40,7 @@ public class TaskService {
      * @return An ArrayList containing all tasks.
      * @throws DAOException If there's an issue with database operations.
      */
-    public ArrayList<Task> readAllTask() throws DAOException {
+    public List<Task> readAllTask() throws DAOException {
         return TaskDAO.readTask();
     }
 
@@ -112,7 +113,7 @@ public class TaskService {
      * @return An ArrayList of ArrayLists, where each inner ArrayList contains task ID and its tags.
      * @throws DAOException If there's an issue with database operations.
      */
-    public ArrayList<ArrayList<String>> readTaskWithTags() throws DAOException {
+    public List<ArrayList<String>> readTaskWithTags() throws DAOException {
         return TaskDAO.readTaskTags();
     }
 
