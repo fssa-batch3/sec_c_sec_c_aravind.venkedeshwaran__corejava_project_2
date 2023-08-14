@@ -50,7 +50,7 @@ Absence of Comprehensive Analytics: Users lack tools that provide insightful ana
 # Architecture and DataBase Design: 
 - [Sql Script](https://github.com/fssa-batch3/sec_c_sec_c_aravind.venkedeshwaran__corejava_project_2/blob/main/src/main/sql/FreshTimeSqlSheet.sql) ↗️
 
-![img.png](img.png)
+![img.png](FreshTime%20ERR%20Diagram.png)
 
 # Code Quality Analysis: 
 We have integrated our project with SonarCloud to perform code quality analysis. You can find the overall analysis report on the SonarCloud platform:
