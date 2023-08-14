@@ -12,7 +12,7 @@ public class UserServiceTest {
         User user = new User();
 
         user.setUserName("Aravind");
-        user.setEmailId("aravind@freshword.com");
+        user.setEmailId("aravind@freshworks.com");
         user.setPassword("Aravind@21");
 
         return user;
@@ -55,7 +55,7 @@ public class UserServiceTest {
     void testForgotPasswordValidInput() {
         UserService userService = new UserService();
 
-        assertDoesNotThrow(() -> userService.userLogin("aravindram@gmail.com", "P@$$w0rd"));
+        assertDoesNotThrow(() -> userService.forgotPassword("aravind@freshword.com", "P@$$w0rd"));
     }
 
     @Test

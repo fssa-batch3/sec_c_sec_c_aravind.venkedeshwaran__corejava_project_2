@@ -6,6 +6,8 @@ import com.fssa.freshtime.exceptions.InvalidInputException;
 import com.fssa.freshtime.models.User;
 import com.fssa.freshtime.validations.UserValidator;
 
+import java.sql.SQLException;
+
 public class UserService {
     public boolean userSignUp(User user) throws InvalidInputException, DAOException {
         UserDAO userDAO = new UserDAO();
@@ -27,14 +29,12 @@ public class UserService {
 
     }
 
-    public boolean forgotPassword(String emailId, String password) throws InvalidInputException, DAOException {
+    public boolean forgotPassword(String emailId, String newPassword) throws InvalidInputException, DAOException, SQLException {
         UserDAO userDAO = new UserDAO();
-
-        if(UserValidator.validateEmailId(emailId) && UserValidator.validatePassword(password))
-            return userDAO.forgotPassword(emailId, password);
-
+        if (UserValidator.validateEmailId(emailId) && UserValidator.validatePassword(newPassword)) {
+            return userDAO.forgotPasswordInDB(emailId, newPassword);
+        }
         return false;
-
     }
 
     public boolean deleteUser(String emailId, String password) throws InvalidInputException, DAOException {
