@@ -1,13 +1,11 @@
 package com.fssa.freshtime.validations;
 
-import com.fssa.freshtime.enums.TaskPriority;
-import com.fssa.freshtime.enums.TaskStatus;
+import com.fssa.freshtime.constants.ValidatorConstants;
 import com.fssa.freshtime.errors.TaskErrors;
 import com.fssa.freshtime.exceptions.InvalidInputException;
 import com.fssa.freshtime.models.Task;
-
 import java.time.*;
-import java.time.chrono.ChronoLocalDate;
+
 
 /**
  * TaskValidator class contains static methods to validate various properties of a Task object.
@@ -27,8 +25,7 @@ public class TaskValidator {
         validateReminder(task.getReminder());
         validateCreatedDate(task.getCreatedDate());
         validateCreatedTime(task.getCreatedTime());
-//        validateTag(task.getTaskTag()) ;
-        return true; // Placeholder method; actual validation should be implemented here.
+        return true;
     }
 
     /**
@@ -38,7 +35,7 @@ public class TaskValidator {
      * @return true if the task name is valid, throws an InvalidInputException if invalid.
      */
     public static boolean validateTaskName(String taskName) throws InvalidInputException {
-        if (taskName.equals(null) || taskName.trim().equals("") || taskName.trim().length() < 3 || taskName.trim().length() > 50) {
+        if (taskName.trim().length() < ValidatorConstants.VERY_SHORT_MIN_LEN || taskName.trim().length() > ValidatorConstants.SHORT_MAX_LEN) {
             throw new InvalidInputException(TaskErrors.INVALID_TASK_NAME);
         }
         return true;
@@ -51,7 +48,7 @@ public class TaskValidator {
      * @return true if the task description is valid, throws an InvalidInputException if invalid.
      */
     public static boolean validateTaskDescription(String taskDescription)  throws InvalidInputException {
-        if (taskDescription.equals(null) || taskDescription.trim().equals("") || taskDescription.trim().length() < 10 || taskDescription.trim().length() > 150) {
+        if (taskDescription.trim().length() < ValidatorConstants.SHORT_MIN_LEN || taskDescription.trim().length() > ValidatorConstants.VERY_LONG_MAX_LEN) {
             throw new InvalidInputException(TaskErrors.INVALID_TASK_DESCRIPTION);
         }
         return true;
@@ -79,7 +76,7 @@ public class TaskValidator {
      * @return true if the notes are valid, throws an InvalidInputException if invalid.
      */
     public static boolean validateTaskNotes(String notes) throws InvalidInputException {
-        if (notes.equals(null) || notes.trim().equals("") || notes.trim().length() < 10 || notes.trim().length() > 150) {
+        if (notes.trim().length() < ValidatorConstants.SHORT_MIN_LEN || notes.trim().length() > ValidatorConstants.VERY_LONG_MAX_LEN) {
             throw new InvalidInputException(TaskErrors.INVALID_TASK_NOTES);
         }
         return true;
@@ -136,8 +133,16 @@ public class TaskValidator {
         }
     }
 
+    /**
+     * Validates a task tag to ensure it meets the required criteria.
+     *
+     * @param taskTag The tag associated with the task.
+     * @return True if the task tag is valid, otherwise false.
+     * @throws InvalidInputException If the task tag is null, empty, or too short.
+     */
+
     public static boolean validateTag(String taskTag) throws InvalidInputException {
-        if(taskTag == null || ("".equals(taskTag)) || taskTag.length() < 3) throw new InvalidInputException(TaskErrors.INVALID_TAG);
+        if(taskTag.length() < ValidatorConstants.VERY_SHORT_MIN_LEN) throw new InvalidInputException(TaskErrors.INVALID_TAG);
         return true;
     }
 

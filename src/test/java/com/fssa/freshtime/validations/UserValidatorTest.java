@@ -38,7 +38,7 @@ class UserValidatorTest {
     @Test
     void testInvalidEmail() {
         assertThrows(InvalidInputException.class, () -> {
-            UserValidator.validateEmailId("aravind@gmail.com");
+            UserValidator.validateEmailId("WrongEmail");
         });
     }
 

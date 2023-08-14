@@ -9,6 +9,7 @@ import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Data Access Object (DAO) class for managing tasks and related data in the database.
@@ -54,12 +55,12 @@ public class TaskDAO {
      * @return An ArrayList of Task objects representing the tasks retrieved.
      * @throws DAOException If an error occurs while reading tasks.
      */
-    public static ArrayList<Task> readTask() throws DAOException {
+    public static List<Task> readTask() throws DAOException {
         try (Connection connection = ConnectionUtil.getConnection()) {
             String selectQuery = "SELECT * FROM tasks";
             try (PreparedStatement psmt = connection.prepareStatement(selectQuery)) {
                 try (ResultSet rs = psmt.executeQuery()) {
-                    ArrayList<Task> taskList = new ArrayList<Task>();
+                    ArrayList<Task> taskList = new ArrayList<>();
                     while (rs.next()) {
                         Task task = new Task();
                         task.setTaskId(rs.getInt("taskId"));
@@ -94,7 +95,7 @@ public class TaskDAO {
             String selectQuery = "SELECT taskId FROM tasks";
             try (PreparedStatement psmt = connection.prepareStatement(selectQuery)) {
                 try (ResultSet rs = psmt.executeQuery()) {
-                    ArrayList<Integer> idList = new ArrayList<Integer>();
+                    ArrayList<Integer> idList = new ArrayList<>();
                     while (rs.next()) {
                         idList.add(rs.getInt("taskId"));
                     }
@@ -212,7 +213,7 @@ public class TaskDAO {
      * @throws DAOException If an error occurs while reading task tags.
      */
 
-    public static ArrayList<ArrayList<String>> readTaskTags() throws DAOException {
+    public static List<ArrayList<String>> readTaskTags() throws DAOException {
         ArrayList<ArrayList<String>> taskTagList = new ArrayList<>();
 
         try (Connection connection = ConnectionUtil.getConnection()) {

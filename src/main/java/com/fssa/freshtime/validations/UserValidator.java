@@ -1,16 +1,12 @@
 package com.fssa.freshtime.validations;
 
+import com.fssa.freshtime.constants.ValidatorConstants;
 import com.fssa.freshtime.errors.UserErrors;
 import com.fssa.freshtime.exceptions.InvalidInputException;
 
 import com.fssa.freshtime.models.User;
 import com.fssa.freshtime.regexs.UserValidationRegex;
-import org.apache.commons.validator.EmailValidator;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-//org.apache.commons.validator.EmailValidator
 public class UserValidator {
 
     public static boolean validateUser(User user) throws InvalidInputException{
@@ -34,7 +30,7 @@ public class UserValidator {
 
     public static boolean validateUserName(String userName) throws InvalidInputException{
         boolean isMatch = userName.matches(UserValidationRegex.USERNAME_REGEX);
-        if(!isMatch || userName.trim().length() < 3){
+        if(!isMatch || userName.trim().length() < ValidatorConstants.VERY_SHORT_MIN_LEN){
             throw  new InvalidInputException(UserErrors.INVALID_USERNAME);
         }
         else{
@@ -44,7 +40,7 @@ public class UserValidator {
 
     public static boolean validatePassword(String password) throws InvalidInputException{;
         boolean isMatch = password.matches(UserValidationRegex.PASSWORD_REGEX);
-        if (!isMatch || password.trim().length() < 8) {
+        if (!isMatch || password.trim().length() < ValidatorConstants.MIN_PASSWORD_LEN) {
             throw new InvalidInputException(UserErrors.INVALID_PASSWORD);
         }
         else{

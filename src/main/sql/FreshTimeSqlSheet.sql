@@ -1,8 +1,6 @@
--- CREATE DATABASE freshtime;
+use aravind_venkedeshwaran_corejava_project;
 
--- use aravind_venkedeshwaran_corejava_project;
-
-use freshtime;
+-- use freshtime;
 
 CREATE TABLE tasks(
 	taskId INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
@@ -40,12 +38,32 @@ CREATE TABLE dailyProgress(
     progress int
     );
 
+CREATE TABLE weeklyProgress(
+	progressId INT PRIMARY KEY AUTO_INCREMENT,
+    weekNo int DEFAULT 0,
+    startOfWeeK int DEFAULT 0,
+    endOfWeek int DEFAULT 0,
+    totalNoOfTask int DEFAULT 0,
+    completedTask int DEFAULT 0,
+    progress int
+    );
+
+CREATE TABLE overallProgress(
+	progressId INT PRIMARY KEY AUTO_INCREMENT,
+    totalNoOfTask int DEFAULT 0,
+    completedTask int DEFAULT 0,
+    progress int
+    );
+
+INSERT INTO overallProgress (progress) VALUES (0);
+
 CREATE TABLE users(
 	userId INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
     emailId VARCHAR(255) UNIQUE NOT NULL,
     userName VARCHAR(255) NOT NULL,
     password VARCHAR(255) NOT NULL
     );
+
 
 INSERT INTO tasks (taskName, taskDescription, dueDate, priority, taskStatus, taskNotes, reminder, createdDate, createdTime)
 VALUES
@@ -73,16 +91,19 @@ SELECT * FROM taskTags;
 
 SELECT * FROM subTasks;
 
+SELECT * FROM dailyProgress;
+
+SELECT * FROM weeklyProgress;
+
+SELECT * FROM overallProgress;
+
+SELECT * FROM users;
+
+
 SELECT t.taskId, t.taskName, s.subtask, tt.tagName
 FROM tasks t
 LEFT JOIN taskTags tt ON t.taskId = tt.taskId
 LEFT JOIN subtasks s ON t.taskId = s.taskId;
-
-
-SELECT * FROM dailyProgress;
-
-SELECT * FROM users;
-
 
 
     

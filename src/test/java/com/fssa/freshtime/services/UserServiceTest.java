@@ -1,5 +1,6 @@
 package com.fssa.freshtime.services;
 
+import com.fssa.freshtime.exceptions.DAOException;
 import com.fssa.freshtime.exceptions.InvalidInputException;
 import com.fssa.freshtime.models.User;
 import org.junit.jupiter.api.Test;
@@ -61,7 +62,7 @@ public class UserServiceTest {
     void testForgotPasswordInvalidInput() {
         UserService userService = new UserService();
 
-        assertThrows(InvalidInputException.class, () -> userService.forgotPassword("notmyemail@gmail.com", "Aravind@21"));
+        assertThrows(DAOException.class, () -> userService.forgotPassword("notmyemail@gmail.com", "Aravind@21"));
     }
 
     @Test

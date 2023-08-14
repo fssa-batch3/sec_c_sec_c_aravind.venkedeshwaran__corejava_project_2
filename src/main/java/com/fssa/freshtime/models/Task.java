@@ -4,8 +4,6 @@ package com.fssa.freshtime.models;
 import com.fssa.freshtime.enums.TaskPriority;
 import com.fssa.freshtime.enums.TaskStatus;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.time.*;
 
 /**
