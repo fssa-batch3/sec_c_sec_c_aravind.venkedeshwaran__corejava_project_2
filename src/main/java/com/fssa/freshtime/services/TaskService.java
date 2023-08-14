@@ -62,6 +62,8 @@ public class TaskService {
                 case "dueDate" -> TaskValidator.validateDueDate((LocalDate) attributeValue);
                 case "taskNotes" -> TaskValidator.validateTaskNotes((String) attributeValue);
                 case "reminder" -> TaskValidator.validateReminder((LocalDateTime) attributeValue);
+                case "priority"-> TaskValidator.validatePriority((String) attributeValue);
+                case "taskStatus"-> TaskValidator.validateTaskStatus((String) attributeValue);
                 default -> throw new InvalidInputException("Invalid attribute name");
             };
 

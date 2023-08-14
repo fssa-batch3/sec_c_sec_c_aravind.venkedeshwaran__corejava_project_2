@@ -36,8 +36,8 @@ public class TaskDAO {
                 psmt.setString(2, task.getTaskName());
                 psmt.setString(3, task.getTaskDescription());
                 psmt.setDate(4, java.sql.Date.valueOf(task.getDueDate()));
-                psmt.setObject(5, task.getPriority());
-                psmt.setObject(6, task.getTaskStatus());
+                psmt.setString(5, task.getPriority().toString());
+                psmt.setString(6, task.getTaskStatus().toString());
                 psmt.setString(7, task.getTaskNotes());
                 psmt.setTimestamp(8, java.sql.Timestamp.valueOf(task.getReminder()));
                 psmt.setDate(9, java.sql.Date.valueOf(task.getCreatedDate()));
@@ -350,3 +350,5 @@ public class TaskDAO {
         }
     }
 }
+
+

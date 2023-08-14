@@ -120,7 +120,7 @@ public class TaskServiceTest {
         TaskService taskService = new TaskService();
 
         assertDoesNotThrow(() ->
-                taskService.updateTaskAttribute(7, "priority", "Medium"));
+                taskService.updateTaskAttribute(7, "priority", "MEDIUM"));
     }
 
     @Test
@@ -136,7 +136,7 @@ public class TaskServiceTest {
         TaskService taskService = new TaskService();
 
         assertDoesNotThrow(() ->
-                taskService.updateTaskAttribute(7, "taskStatus", "In Progress"));
+                taskService.updateTaskAttribute(7, "taskStatus", "INPROGRESS"));
     }
 
     @Test
@@ -207,7 +207,7 @@ public class TaskServiceTest {
     void testCreateTaskTag(){
         TaskService taskService = new TaskService();
 
-        assertDoesNotThrow(() -> taskService.createTaskTag(13, "Validator"));
+        assertDoesNotThrow(() -> taskService.createTaskTag(1, "Validator"));
     }
 
     @Test
@@ -243,7 +243,7 @@ public class TaskServiceTest {
     void testCreateSubTask(){
         TaskService taskService = new TaskService();
 
-        assertDoesNotThrow(() -> taskService.createSubTask(13, "Create Getters and Setters"));
+        assertDoesNotThrow(() -> taskService.createSubTask(1, "Create Getters and Setters"));
     }
 
     @Test
@@ -276,11 +276,10 @@ public class TaskServiceTest {
     }
 
     @Test
-    void testChangeTaskStatusAndInsertDailyProgress() throws DAOException {
+    void testChangeTaskStatusAndInsertProgress() throws DAOException {
         TaskService taskService = new TaskService();
 
-        boolean result = taskService.changeTaskStatus(TaskStatus.COMPLETED, 6);
+        assertTrue(taskService.changeTaskStatus(TaskStatus.COMPLETED, 2));
 
-        assertTrue(result);
     }
 }

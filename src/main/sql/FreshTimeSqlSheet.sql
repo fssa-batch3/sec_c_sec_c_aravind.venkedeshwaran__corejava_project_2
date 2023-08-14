@@ -1,3 +1,5 @@
+-- CREATE DATABASE freshtime;
+
 use aravind_venkedeshwaran_corejava_project;
 
 -- use freshtime;
@@ -41,7 +43,7 @@ CREATE TABLE dailyProgress(
 CREATE TABLE weeklyProgress(
 	progressId INT PRIMARY KEY AUTO_INCREMENT,
     weekNo int DEFAULT 0,
-    startOfWeeK int DEFAULT 0,
+    startOfWeek int DEFAULT 0,
     endOfWeek int DEFAULT 0,
     totalNoOfTask int DEFAULT 0,
     completedTask int DEFAULT 0,
@@ -67,18 +69,18 @@ CREATE TABLE users(
 
 INSERT INTO tasks (taskName, taskDescription, dueDate, priority, taskStatus, taskNotes, reminder, createdDate, createdTime)
 VALUES
-    ('Create Model Task object', 'Description of Create Model Task object', '2023-08-05', 'High', 'Not Started', 'Notes for Create Model Task object', '2023-08-05 16:00:00', '2023-08-05', '2023-08-05 14:15:00'),
-    ('Write validator for the task object', 'Description of Write validator for the task object', '2023-08-05', 'Medium', 'Not Started', 'Notes for Write validator for the task object', '2023-08-05 16:00:00', '2023-08-05', '2023-08-05 14:15:00'),
-    ('Test the task validator', 'Description of Test the task validator', '2023-08-05', 'Low', 'Not Started', 'Notes for Test the task validator', '2023-08-05 16:00:00', '2023-08-05', '2023-08-05 14:15:00'),
-    ('Write query in DAOLayer to store tasks in database', 'Description of Task 4', '2023-08-06', 'High', 'Not Started', 'Notes for Task 4', '2023-08-06 16:00:00', '2023-08-05', '2023-08-05 14:15:00'),
-    ('Write serviceLayer to validate task and insert the task data', 'Description of Task 5', '2023-08-06', 'Medium', 'Not Started', 'Notes for Task 5', '2023-08-06 16:00:00', '2023-08-05', '2023-08-05 14:15:00'),
-    ('Write testcase for the service layer', 'Description of Task 6', '2023-08-06', 'Low', 'Not Started', 'Notes for Task 6', '2023-08-06 16:00:00', '2023-08-05', '2023-08-05 14:15:00'),
-    ('Create Model Habit object', 'Description of Create Model Habit object', '2023-08-05', 'High', 'Not Started', 'Notes for Create Model Habit object', '2023-08-05 16:00:00', '2023-08-05', '2023-08-05 14:15:00'),
-    ('Write validator for the habit object', 'Description of Write validator for the habit object', '2023-08-05', 'Medium', 'Not Started', 'Notes for Write validator for the habit object', '2023-08-05 16:00:00', '2023-08-05', '2023-08-05 14:15:00'),
-    ('Test the habit validator', 'Description of Test the habit validator', '2023-08-05', 'Low', 'Not Started', 'Notes for Test the habit validator', '2023-08-05 16:00:00', '2023-08-05', '2023-08-05 14:15:00'),
-    ('Write query in DAOLayer to store habit in database', 'Description of Task 10', '2023-08-06', 'High', 'Not Started', 'Notes for Task 10', '2023-08-06 16:00:00', '2023-08-05', '2023-08-05 14:15:00'),
-    ('Write serviceLayer to validate habit and insert the habit data', 'Description of Task 5', '2023-08-06', 'Medium', 'Not Started', 'Notes for Task 5', '2023-08-06 16:00:00', '2023-08-05', '2023-08-05 14:15:00'),
-    ('Write testcase for the service layer', 'Description of Task 6', '2023-08-06', 'Low', 'Not Started', 'Notes for Task 6', '2023-08-06 16:00:00', '2023-08-05', '2023-08-05 14:15:00');
+    ('Create Model Task object', 'Description of Create Model Task object', '2023-08-05', 'HIGH', 'NOTSTARTED', 'Notes for Create Model Task object', '2023-08-05 16:00:00', '2023-08-05', '2023-08-05 14:15:00'),
+        ('Write validator for the task object', 'Description of Write validator for the task object', '2023-08-05', 'MEDIUM', 'NOTSTARTED', 'Notes for Write validator for the task object', '2023-08-05 16:00:00', '2023-08-05', '2023-08-05 14:15:00'),
+        ('Test the task validator', 'Description of Test the task validator', '2023-08-05', 'LOW', 'NOTSTARTED', 'Notes for Test the task validator', '2023-08-05 16:00:00', '2023-08-05', '2023-08-05 14:15:00'),
+        ('Write query in DAOLayer to store tasks in database', 'Description of Task 4', '2023-08-06', 'HIGH', 'NOTSTARTED', 'Notes for Task 4', '2023-08-06 16:00:00', '2023-08-05', '2023-08-05 14:15:00'),
+        ('Write serviceLayer to validate task and insert the task data', 'Description of Task 5', '2023-08-06', 'MEDIUM', 'NOTSTARTED', 'Notes for Task 5', '2023-08-06 16:00:00', '2023-08-05', '2023-08-05 14:15:00'),
+        ('Write testcase for the service layer', 'Description of Task 6', '2023-08-06', 'LOW', 'NOTSTARTED', 'Notes for Task 6', '2023-08-06 16:00:00', '2023-08-05', '2023-08-05 14:15:00'),
+        ('Create Model Habit object', 'Description of Create Model Habit object', '2023-08-05', 'HIGH', 'NOTSTARTED', 'Notes for Create Model Habit object', '2023-08-05 16:00:00', '2023-08-05', '2023-08-05 14:15:00'),
+        ('Write validator for the habit object', 'Description of Write validator for the habit object', '2023-08-05', 'MEDIUM', 'NOTSTARTED', 'Notes for Write validator for the habit object', '2023-08-05 16:00:00', '2023-08-05', '2023-08-05 14:15:00'),
+        ('Test the habit validator', 'Description of Test the habit validator', '2023-08-05', 'LOW', 'NOTSTARTED', 'Notes for Test the habit validator', '2023-08-05 16:00:00', '2023-08-05', '2023-08-05 14:15:00'),
+        ('Write query in DAOLayer to store habit in database', 'Description of Task 10', '2023-08-06', 'HIGH', 'NOTSTARTED', 'Notes for Task 10', '2023-08-06 16:00:00', '2023-08-05', '2023-08-05 14:15:00'),
+        ('Write serviceLayer to validate habit and insert the habit data', 'Description of Task 5', '2023-08-06', 'MEDIUM', 'NOTSTARTED', 'Notes for Task 5', '2023-08-06 16:00:00', '2023-08-05', '2023-08-05 14:15:00'),
+        ('Write testcase for the service layer', 'Description of Task 6', '2023-08-06', 'LOW', 'NOTSTARTED', 'Notes for Task 6', '2023-08-06 16:00:00', '2023-08-05', '2023-08-05 14:15:00');
 
 
 INSERT INTO taskTags (taskId, tagName) VALUES (1, 'task'), (2, 'task'), (3, 'task'), (4, 'task'), (5, 'task'), (6, 'task'),

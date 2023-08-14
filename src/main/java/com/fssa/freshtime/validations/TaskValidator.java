@@ -146,4 +146,27 @@ public class TaskValidator {
         return true;
     }
 
+    public static boolean validatePriority(String priority) throws InvalidInputException{
+        String[] priorities ={"HIGH", "MEDIUM", "LOW"};
+
+        boolean isValid = true;
+
+        for(String prty : priorities) if (!priority.equals(prty)) isValid = false;
+
+        if(!isValid) throw new InvalidInputException(TaskErrors.INVALID_PRIORITY);
+        return true;
+    }
+
+    public static boolean validateTaskStatus(String taskStatus) throws InvalidInputException{
+        String[] status = {"NOTSTARTED", "INPROGRESS", "COMPLETED", "CANCELLED", "OVERDUE", "SCHEDULE"};
+
+        boolean isValid = true;
+
+        for(String sts : status) if (!taskStatus.equals(status)) isValid = false;
+
+        if(!isValid) throw new InvalidInputException(TaskErrors.INVALID_STATUS);
+        return true;
+    }
+
+
 }
