@@ -55,7 +55,7 @@ public class UserServiceTest {
     void testForgotPasswordValidInput() {
         UserService userService = new UserService();
 
-        assertDoesNotThrow(() -> userService.forgotPassword("aravind@freshword.com", "P@$$w0rd"));
+        assertDoesNotThrow(() -> userService.forgotPassword("aravind@freshworks.com", "P@$$w0rd"));
     }
 
     @Test
