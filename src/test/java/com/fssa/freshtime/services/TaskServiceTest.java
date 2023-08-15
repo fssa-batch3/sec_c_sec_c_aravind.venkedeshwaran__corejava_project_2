@@ -16,7 +16,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TaskServiceTest {
+class TaskServiceTest {
 
 
     Task getTask() {
@@ -251,7 +251,7 @@ public class TaskServiceTest {
         TaskService taskService = new TaskService();
 
         try{
-            ArrayList<ArrayList<String>> taskWithSubTaskList = taskService.readTaskWithSubTask();
+            List<ArrayList<String>> taskWithSubTaskList = taskService.readTaskWithSubTask();
 
             assertNotNull(taskWithSubTaskList);
             assertFalse(taskWithSubTaskList.isEmpty());

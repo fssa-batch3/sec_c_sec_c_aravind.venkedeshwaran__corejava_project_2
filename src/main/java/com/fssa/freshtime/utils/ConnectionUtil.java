@@ -1,5 +1,6 @@
 package com.fssa.freshtime.utils;
 
+import com.fssa.freshtime.exceptions.DAOException;
 import io.github.cdimascio.dotenv.Dotenv;
 
 import java.sql.*;
@@ -20,7 +21,7 @@ public class ConnectionUtil {
             Class.forName("com.mysql.cj.jdbc.Driver");
             return DriverManager.getConnection(url, userName, passWord);
         } catch (ClassNotFoundException | SQLException e) {
-            throw new RuntimeException("Unable to connect to the database", e);
+            throw new DAOException("Unable to connect to the database");
         }
     }
 

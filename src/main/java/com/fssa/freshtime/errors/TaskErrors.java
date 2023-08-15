@@ -1,6 +1,6 @@
 package com.fssa.freshtime.errors;
 
-public interface TaskErrors {
+public class TaskErrors {
     public static final String INVALID_TASK_NAME = "Invalid Task Name: Task Name Can Not Be Empty or less than 3 Character";
     public static final String INVALID_TASK_ID = "Invalid Task Id: Task Id Can Not Be Zero Or Negative";
     public static final String INVALID_TASK_DESCRIPTION = "Invalid Task Description: Task Description CanNot Be Empty or less than 10 Character";

@@ -17,7 +17,9 @@ import java.util.List;
  */
 public class TaskDAO {
 
-    public static final String taskId = "taskId";
+    public static final String TASKID = "taskId";
+    public static final String TASKNAME = "taskName";
+
 
     /**
      * Creates a new task in the database.
@@ -44,7 +46,7 @@ public class TaskDAO {
                 psmt.setTimestamp(10, java.sql.Timestamp.valueOf(task.getCreatedTime()));
 
                 int rowAffected = psmt.executeUpdate();
-                
+
                 return rowAffected > 0;
             }
         } catch (SQLException e) {
@@ -66,8 +68,8 @@ public class TaskDAO {
                     ArrayList<Task> taskList = new ArrayList<>();
                     while (rs.next()) {
                         Task task = new Task();
-                        task.setTaskId(rs.getInt(taskId));
-                        task.setTaskName(rs.getString("taskName"));
+                        task.setTaskId(rs.getInt(TASKID));
+                        task.setTaskName(rs.getString(TASKNAME));
                         task.setTaskDescription(rs.getString("taskDescription"));
                         task.setDueDate(rs.getDate("dueDate").toLocalDate());
                         task.setPriority(TaskPriority.valueOf(rs.getString("priority")));
@@ -93,14 +95,14 @@ public class TaskDAO {
      * @throws DAOException If an error occurs while reading task IDs.
      */
 
-    public static ArrayList<Integer> getAllIds() throws DAOException {
+    public static List<Integer> getAllIds() throws DAOException {
         try (Connection connection = ConnectionUtil.getConnection()) {
             String selectQuery = "SELECT taskId FROM tasks";
             try (PreparedStatement psmt = connection.prepareStatement(selectQuery)) {
                 try (ResultSet rs = psmt.executeQuery()) {
                     ArrayList<Integer> idList = new ArrayList<>();
                     while (rs.next()) {
-                        idList.add(rs.getInt(taskId));
+                        idList.add(rs.getInt(TASKID));
                     }
                     return idList;
                 }
@@ -126,11 +128,14 @@ public class TaskDAO {
             String updateQuery = "UPDATE tasks SET " + attributeName + "=? WHERE taskId=?";
             try (PreparedStatement psmt = connection.prepareStatement(updateQuery)) {
                 if (attributeValue instanceof String) {
-                    psmt.setString(1, (String) attributeValue);
+                    String stringValue = (String) attributeValue;
+                    psmt.setString(1, stringValue);
                 } else if (attributeValue instanceof LocalDate) {
-                    psmt.setDate(1, java.sql.Date.valueOf((LocalDate) attributeValue));
+                    LocalDate localDateValue = (LocalDate) attributeValue;
+                    psmt.setDate(1, java.sql.Date.valueOf(localDateValue));
                 } else if (attributeValue instanceof LocalDateTime) {
-                    psmt.setTimestamp(1, java.sql.Timestamp.valueOf((LocalDateTime) attributeValue));
+                    LocalDateTime localDateTimeValue = (LocalDateTime) attributeValue;
+                    psmt.setTimestamp(1, java.sql.Timestamp.valueOf(localDateTimeValue));
                 } else {
                     throw new IllegalArgumentException("Unsupported attribute value type");
                 }
@@ -144,6 +149,7 @@ public class TaskDAO {
             throw new DAOException("Error while updating task: " + e.getMessage());
         }
     }
+
 
 
     /**
@@ -227,8 +233,8 @@ public class TaskDAO {
 
                 while (rs.next()) {
                     ArrayList<String> row = new ArrayList<>();
-                    row.add(rs.getInt(taskId) + " ");
-                    row.add(rs.getString("taskName") + " ");
+                    row.add(rs.getInt(TASKID) + " ");
+                    row.add(rs.getString(TASKNAME) + " ");
                     row.add(rs.getString("tagName") + " ");
                     taskTagList.add(row);
                 }
@@ -258,7 +264,7 @@ public class TaskDAO {
                 psmt.setInt(2, taskId);
 
                 int rowAffected = psmt.executeUpdate();
-                
+
                 return rowAffected > 0;
             }
         } catch (SQLException e) {
@@ -284,7 +290,7 @@ public class TaskDAO {
                 psmt.setString(2, subTaskName);
 
                 int rowAffected = psmt.executeUpdate();
-                
+
                 return rowAffected > 0;
             }
         } catch (SQLException e) {
@@ -299,7 +305,7 @@ public class TaskDAO {
      * @throws DAOException If an error occurs while reading tasks and subtasks.
      */
 
-    public static ArrayList<ArrayList<String>> readSubTask() throws DAOException {
+    public static List<ArrayList<String>> readSubTask() throws DAOException {
         ArrayList<ArrayList<String>> taskWithSubTaskList = new ArrayList<>();
 
         try (Connection connection = ConnectionUtil.getConnection()) {
@@ -311,8 +317,8 @@ public class TaskDAO {
 
                 while (rs.next()) {
                     ArrayList<String> row = new ArrayList<>();
-                    row.add(rs.getInt(taskId) + " ");
-                    row.add(rs.getString("taskName") + " ");
+                    row.add(rs.getInt(TASKID) + " ");
+                    row.add(rs.getString(TASKNAME) + " ");
                     row.add(rs.getString("subtask") + " ");
                     taskWithSubTaskList.add(row);
                 }

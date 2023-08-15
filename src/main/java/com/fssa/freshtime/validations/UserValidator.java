@@ -38,7 +38,7 @@ public class UserValidator {
         }
     }
 
-    public static boolean validatePassword(String password) throws InvalidInputException{;
+    public static boolean validatePassword(String password) throws InvalidInputException{
         boolean isMatch = password.matches(UserValidationRegex.PASSWORD_REGEX);
         if (!isMatch || password.trim().length() < ValidatorConstants.MIN_PASSWORD_LEN) {
             throw new InvalidInputException(UserErrors.INVALID_PASSWORD);

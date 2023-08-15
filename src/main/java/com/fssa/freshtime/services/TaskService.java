@@ -159,7 +159,7 @@ public class TaskService {
      * @return An ArrayList of ArrayLists, where each inner ArrayList contains task ID and its subtasks.
      * @throws DAOException If there's an issue with database operations.
      */
-    public ArrayList<ArrayList<String>> readTaskWithSubTask() throws DAOException {
+    public List<ArrayList<String>> readTaskWithSubTask() throws DAOException {
         return TaskDAO.readSubTask();
     }
 

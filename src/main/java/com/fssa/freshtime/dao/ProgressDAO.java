@@ -10,6 +10,7 @@ import java.time.LocalDate;
 import java.time.temporal.WeekFields;
 
 import java.util.Locale;
+import java.util.Objects;
 
 public class ProgressDAO {
     /**
@@ -244,10 +245,10 @@ public class ProgressDAO {
 
     public static void insertWeeklyProgress(Connection connection, int taskId) throws DAOException, SQLException {
 
-        LocalDate dueDate = getDueDateByTaskId(connection, taskId).toLocalDate();
+        LocalDate dueDate = Objects.requireNonNull(getDueDateByTaskId(connection, taskId)).toLocalDate();
 
-        LocalDate startOfWeek = dueDate.minusDays(dueDate.getDayOfWeek().getValue() - DayOfWeek.MONDAY.getValue());
-        LocalDate endOfWeek = dueDate.plusDays(7 - dueDate.getDayOfWeek().getValue());
+        LocalDate startOfWeek = dueDate.minusDays((long) dueDate.getDayOfWeek().getValue() - DayOfWeek.MONDAY.getValue());
+        LocalDate endOfWeek = dueDate.plusDays(7 - (long) dueDate.getDayOfWeek().getValue());
 
         // Define the first day of the week as Monday
         WeekFields weekFields = WeekFields.of(Locale.getDefault());

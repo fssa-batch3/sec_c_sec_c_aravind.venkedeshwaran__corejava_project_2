@@ -6,7 +6,7 @@ import com.fssa.freshtime.models.User;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class UserServiceTest {
+class UserServiceTest {
 
     User getUser(){
         User user = new User();
