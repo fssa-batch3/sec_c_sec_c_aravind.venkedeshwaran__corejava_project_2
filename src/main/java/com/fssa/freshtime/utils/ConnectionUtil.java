@@ -12,7 +12,7 @@ public class ConnectionUtil {
     private static final String DATABASE_PASSWORD_ENV_VAR = "DATABASE_PASSWORD";
     private static final String CI_ENV_VAR = "CI";
 
-    public static Connection getConnection() {
+    public static Connection getConnection() throws DAOException {
         String url = getEnvVariable(DATABASE_HOST_ENV_VAR);
         String userName = getEnvVariable(DATABASE_USERNAME_ENV_VAR);
         String passWord = getEnvVariable(DATABASE_PASSWORD_ENV_VAR);
@@ -40,10 +40,10 @@ public class ConnectionUtil {
 
     private static final String DB_URL = "jdbc:mysql://:3306/freshtime";
     private static final String DB_USER = "root";
-    private static final String DB_PASSWORD = "root";
+    private static final String DB_PASS = "root";
 
     public static Connection getMyConnection() throws SQLException {
 
-        return DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+        return DriverManager.getConnection(DB_URL, DB_USER, DB_PASS);
     }
 }

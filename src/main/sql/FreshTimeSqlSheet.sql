@@ -43,8 +43,8 @@ CREATE TABLE dailyProgress(
 CREATE TABLE weeklyProgress(
 	progressId INT PRIMARY KEY AUTO_INCREMENT,
     weekNo int DEFAULT 0,
-    startOfWeek int DEFAULT 0,
-    endOfWeek int DEFAULT 0,
+    startOfWeek DATE,
+    endOfWeek DATE,
     totalNoOfTask int DEFAULT 0,
     completedTask int DEFAULT 0,
     progress int
@@ -52,8 +52,8 @@ CREATE TABLE weeklyProgress(
 
 CREATE TABLE overallProgress(
 	progressId INT PRIMARY KEY AUTO_INCREMENT,
-    totalNoOfTask int DEFAULT 0,
-    completedTask int DEFAULT 0,
+    totalTaskCount int DEFAULT 0,
+    totalCompletedTaskCount int DEFAULT 0,
     progress int
     );
 
@@ -86,6 +86,7 @@ VALUES
 INSERT INTO taskTags (taskId, tagName) VALUES (1, 'task'), (2, 'task'), (3, 'task'), (4, 'task'), (5, 'task'), (6, 'task'),
 (7, 'habit'), (8, 'habit'), (9, 'habit'), (10, 'habit'), (11, 'habit'), (12, 'habit');
 
+INSERT INTO users (emailId, userName, password) VALUES ("sample@gmail.com", "sample User",  "P@$$w0rd");
 
 SELECT * FROM tasks;
 
@@ -102,10 +103,10 @@ SELECT * FROM overallProgress;
 SELECT * FROM users;
 
 
-SELECT t.taskId, t.taskName, s.subtask, tt.tagName
-FROM tasks t
-LEFT JOIN taskTags tt ON t.taskId = tt.taskId
-LEFT JOIN subtasks s ON t.taskId = s.taskId;
+-- SELECT t.taskId, t.taskName, s.subtask, tt.tagName
+-- FROM tasks t
+-- LEFT JOIN taskTags tt ON t.taskId = tt.taskId
+-- LEFT JOIN subtasks s ON t.taskId = s.taskId;
 
 
     
