@@ -1,4 +1,4 @@
-package com.fssa.freshtime.constants;
+package com.fssa.freshtime.validators.contants;
 
 /**
  * Constants for defining length constraints used in validation.

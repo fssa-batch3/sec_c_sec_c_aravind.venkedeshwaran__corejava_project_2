@@ -1,4 +1,4 @@
-package com.fssa.freshtime.regexs;
+package com.fssa.freshtime.validators.regexs;
 
 public class UserValidationRegex {
     public static final String EMAIL_REGEX = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+[a-zA-Z.-]+$";

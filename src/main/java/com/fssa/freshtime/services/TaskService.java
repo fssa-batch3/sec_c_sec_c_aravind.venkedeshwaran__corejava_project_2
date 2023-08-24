@@ -2,15 +2,15 @@ package com.fssa.freshtime.services;
 
 import com.fssa.freshtime.dao.ProgressDAO;
 import com.fssa.freshtime.dao.TaskDAO;
-import com.fssa.freshtime.enums.TaskStatus;
+import com.fssa.freshtime.models.enums.TaskStatus;
 import com.fssa.freshtime.exceptions.DAOException;
 import com.fssa.freshtime.exceptions.InvalidInputException;
+import com.fssa.freshtime.exceptions.ServiceException;
+import com.fssa.freshtime.models.Subtask;
 import com.fssa.freshtime.models.Task;
-import com.fssa.freshtime.validations.TaskValidator;
+import com.fssa.freshtime.models.Tasktags;
+import com.fssa.freshtime.validators.TaskValidator;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -18,6 +18,7 @@ import java.util.List;
  */
 public class TaskService {
 
+    public static final String INVALID_TASK_ID = "Invalid Task Id";
     /**
      * Adds a task to the database.
      *
@@ -26,13 +27,21 @@ public class TaskService {
      * @throws DAOException If there's an issue with database operations.
      * @throws InvalidInputException If the task is invalid.
      */
-    public boolean addTaskToDB(Task task) throws DAOException, InvalidInputException {
-        if (TaskValidator.validate(task)) {
-            return TaskDAO.createTask(task);
-        } else {
-            return false;
+
+    public boolean addTask(Task task) throws ServiceException {
+        try {
+            if (TaskValidator.validate(task)) {
+                return TaskDAO.createTask(task);
+            } else {
+                return false;
+            }
+        } catch (InvalidInputException | DAOException e) {
+            throw new ServiceException("Error while adding task: " + e.getMessage());
         }
     }
+
+
+
 
     /**
      * Retrieves a list of all tasks from the database.
@@ -40,39 +49,35 @@ public class TaskService {
      * @return An ArrayList containing all tasks.
      * @throws DAOException If there's an issue with database operations.
      */
-    public List<Task> readAllTask() throws DAOException {
-        return TaskDAO.readTask();
+    public List<Task> readAllTask() throws ServiceException {
+        try {
+            return TaskDAO.readTask();
+        }
+        catch (DAOException e) {
+            throw new ServiceException("Error while reading task: " + e.getMessage());
+        }
     }
 
-    /**
-     * Updates a specific attribute of a task.
-     *
-     * @param taskId         The ID of the task to be updated.
-     * @param attributeName The name of the attribute to be updated.
-     * @param attributeValue The new value for the attribute.
-     * @return True if the attribute is valid and successfully updated, false otherwise.
-     * @throws DAOException If there's an issue with database operations.
-     * @throws InvalidInputException If the attribute name or value is invalid.
-     */
-    public boolean updateTaskAttribute(int taskId, String attributeName, Object attributeValue) throws DAOException, InvalidInputException {
-        if (TaskDAO.getAllIds().contains(taskId)) {
-            boolean isValid = switch (attributeName) {
-                case "taskName" -> TaskValidator.validateTaskName((String) attributeValue);
-                case "taskDescription" -> TaskValidator.validateTaskDescription((String) attributeValue);
-                case "dueDate" -> TaskValidator.validateDueDate((LocalDate) attributeValue);
-                case "taskNotes" -> TaskValidator.validateTaskNotes((String) attributeValue);
-                case "reminder" -> TaskValidator.validateReminder((LocalDateTime) attributeValue);
-                case "priority"-> TaskValidator.validatePriority((String) attributeValue);
-                case "taskStatus"-> TaskValidator.validateTaskStatus((String) attributeValue);
-                default -> throw new InvalidInputException("Invalid attribute name");
-            };
 
-            if (isValid) {
-                return TaskDAO.updateTaskAttribute(taskId, attributeName, attributeValue);
+
+    public boolean updateTask(Task task) throws ServiceException {
+        try {
+            if(TaskDAO.getAllIds().contains(task.getTaskId())) {
+                if(TaskValidator.validate(task)) {
+                    return TaskDAO.updateTask(task);
+                }
             }
+            else{
+                throw new ServiceException(INVALID_TASK_ID);
+            }
+        } catch (InvalidInputException | DAOException e) {
+            throw new ServiceException("Error while updating task: " + e.getMessage());
         }
         return false;
     }
+
+
+
 
     /**
      * Deletes a task from the database.
@@ -82,11 +87,18 @@ public class TaskService {
      * @throws DAOException If there's an issue with database operations.
      * @throws InvalidInputException If the task ID is invalid.
      */
-    public boolean deleteTask(int taskId) throws DAOException, InvalidInputException {
-        if (TaskDAO.getAllIds().contains(taskId)) {
-            return TaskDAO.deleteTask(taskId);
+    public boolean deleteTask(int taskId) throws ServiceException {
+        try {
+            if (TaskDAO.getAllIds().contains(taskId)) {
+                return TaskDAO.deleteTask(taskId);
+            }
+            else{
+                throw new ServiceException(INVALID_TASK_ID);
+            }
         }
-        return false;
+        catch (DAOException e){
+            throw new ServiceException(e.getMessage());
+        }
     }
 
 
@@ -101,11 +113,19 @@ public class TaskService {
      * @throws DAOException If there's an issue with database operations.
      * @throws InvalidInputException If the tag is invalid.
      */
-    public boolean createTaskTag(int taskId, String tag) throws DAOException, InvalidInputException {
-        if (TaskValidator.validateTag(tag)) {
-            return TaskDAO.createTags(taskId, tag);
-        } else {
-            return false;
+    public boolean createTaskTag(int taskId, String tag) throws ServiceException {
+        try {
+            if (TaskDAO.getAllIds().contains(taskId)) {
+                if (TaskValidator.validateTag(tag)) {
+                    return TaskDAO.createTags(taskId, tag);
+                }
+                return false;
+            } else {
+                throw new ServiceException(INVALID_TASK_ID);
+            }
+        }
+        catch(DAOException| InvalidInputException e){
+            throw new ServiceException(e.getMessage());
         }
     }
 
@@ -115,7 +135,7 @@ public class TaskService {
      * @return An ArrayList of ArrayLists, where each inner ArrayList contains task ID and its tags.
      * @throws DAOException If there's an issue with database operations.
      */
-    public List<ArrayList<String>> readTaskWithTags() throws DAOException {
+    public List<Tasktags> readTaskTags() throws DAOException {
         return TaskDAO.readTaskTags();
     }
 
@@ -128,28 +148,35 @@ public class TaskService {
      * @throws DAOException If there's an issue with database operations.
      * @throws InvalidInputException If the tag name is invalid.
      */
-    public boolean updateTaskTag(String tagName, int taskId) throws DAOException, InvalidInputException {
-        if (TaskValidator.validateTag(tagName)) {
-            return TaskDAO.updateTagName(tagName, taskId);
-        } else {
-            return false;
+    public boolean updateTaskTag(String tagName, int taskId) throws ServiceException {
+        try{
+            if(TaskDAO.getAllIds().contains(taskId)) {
+                if (TaskValidator.validateTag(tagName)) {
+                    return TaskDAO.updateTagName(tagName, taskId);
+                } else {
+                    return false;
+                }
+            }
+            else{
+                throw new ServiceException(INVALID_TASK_ID);
+            }
         }
+        catch (InvalidInputException | DAOException e){
+            throw new ServiceException(e.getMessage());
+        }
+
     }
 
-    /**
-     * Creates a new subtask for a specific task in the database.
-     *
-     * @param taskId   The ID of the task to associate with the new subtask.
-     * @param subTask The subtask to be created.
-     * @return True if the subtask is valid and successfully created, false otherwise.
-     * @throws DAOException If there's an issue with database operations.
-     * @throws InvalidInputException If the subtask is invalid.
-     */
-    public boolean createSubTask(int taskId, String subTask) throws DAOException, InvalidInputException {
-        if (TaskValidator.validateTaskName(subTask)) {
-            return TaskDAO.createSubtask(taskId, subTask);
-        } else {
-            return false;
+
+    public boolean createSubtask(Subtask subtask) throws ServiceException {
+        try {
+            if (TaskValidator.validateSubtask(subtask)) {
+                return TaskDAO.createSubTask(subtask);
+            } else {
+                return false;
+            }
+        } catch (InvalidInputException | DAOException e) {
+            throw new ServiceException("Error while creating subtask: " + e.getMessage());
         }
     }
 
@@ -159,25 +186,37 @@ public class TaskService {
      * @return An ArrayList of ArrayLists, where each inner ArrayList contains task ID and its subtasks.
      * @throws DAOException If there's an issue with database operations.
      */
-    public List<ArrayList<String>> readTaskWithSubTask() throws DAOException {
-        return TaskDAO.readSubTask();
+    public List<Subtask> readSubtask() throws ServiceException {
+        try {
+            return TaskDAO.readSubTask();
+        }
+        catch (DAOException e) {
+            throw new ServiceException("Error while reading subtask: " + e.getMessage());
+        }
     }
 
     /**
      * Updates a specific subtask in the database.
      *
      * @param subtask   The new subtask value.
-     * @param subtaskId The ID of the subtask to be updated.
      * @return True if the subtask value is valid and successfully updated, false otherwise.
      * @throws DAOException If there's an issue with database operations.
      * @throws InvalidInputException If the subtask value is invalid.
      */
-    public boolean updateSubTask(String subtask, int subtaskId) throws DAOException, InvalidInputException {
-        if (TaskValidator.validateTaskName(subtask)) {
-            return TaskDAO.updateSubtask(subtask, subtaskId);
-        } else {
-            return false;
+    public boolean updateSubtask(Subtask subtask) throws ServiceException {
+        try {
+            if(TaskDAO.getAllSubtaskIds().contains(subtask.getSubtaskId())) {
+                if(TaskValidator.validateSubtask(subtask)) {
+                    return TaskDAO.updatesubtask(subtask);
+                }
+            }
+            else{
+                throw new ServiceException(INVALID_TASK_ID);
+            }
+        } catch (InvalidInputException | DAOException e) {
+            throw new ServiceException("Error while updating subtask: " + e.getMessage());
         }
+        return false;
     }
 
     /**
@@ -191,4 +230,5 @@ public class TaskService {
     public boolean changeTaskStatus(TaskStatus taskStatus, int taskId) throws DAOException {
         return ProgressDAO.changeTaskStatus(taskStatus, taskId);
     }
+
 }

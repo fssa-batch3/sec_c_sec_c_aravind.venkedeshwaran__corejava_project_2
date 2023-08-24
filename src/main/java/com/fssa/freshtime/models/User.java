@@ -1,10 +1,20 @@
 package com.fssa.freshtime.models;
 
 public class User {
+
+
+    private int userId;
     private String emailId;
     private String userName;
     private String password;
 
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
 
     public String getEmailId() {
         return emailId;
@@ -30,4 +40,12 @@ public class User {
         this.password = password;
     }
 
+    @Override
+    public String toString() {
+        return "User{" +
+                "emailId='" + emailId + '\'' +
+                ", userName='" + userName + '\'' +
+                ", password='" + password + '\'' +
+                '}';
+    }
 }

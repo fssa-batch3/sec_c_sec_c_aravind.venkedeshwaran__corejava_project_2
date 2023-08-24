@@ -1,4 +1,4 @@
-package com.fssa.freshtime.errors;
+package com.fssa.freshtime.validators.errors;
 
 public class UserErrors {
 

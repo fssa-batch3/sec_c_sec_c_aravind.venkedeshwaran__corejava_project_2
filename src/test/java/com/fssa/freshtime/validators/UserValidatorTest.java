@@ -1,4 +1,4 @@
-package com.fssa.freshtime.validations;
+package com.fssa.freshtime.validators;
 
 import com.fssa.freshtime.exceptions.InvalidInputException;
 import com.fssa.freshtime.models.User;

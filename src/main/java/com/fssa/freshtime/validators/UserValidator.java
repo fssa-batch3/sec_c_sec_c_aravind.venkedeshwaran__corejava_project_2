@@ -1,11 +1,11 @@
-package com.fssa.freshtime.validations;
+package com.fssa.freshtime.validators;
 
-import com.fssa.freshtime.constants.ValidatorConstants;
-import com.fssa.freshtime.errors.UserErrors;
+import com.fssa.freshtime.validators.contants.ValidatorConstants;
+import com.fssa.freshtime.validators.errors.UserErrors;
 import com.fssa.freshtime.exceptions.InvalidInputException;
 
 import com.fssa.freshtime.models.User;
-import com.fssa.freshtime.regexs.UserValidationRegex;
+import com.fssa.freshtime.validators.regexs.UserValidationRegex;
 
 public class UserValidator {
 

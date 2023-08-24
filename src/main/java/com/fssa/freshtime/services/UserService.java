@@ -4,11 +4,13 @@ import com.fssa.freshtime.dao.UserDAO;
 import com.fssa.freshtime.exceptions.DAOException;
 import com.fssa.freshtime.exceptions.InvalidInputException;
 import com.fssa.freshtime.models.User;
-import com.fssa.freshtime.validations.UserValidator;
+import com.fssa.freshtime.validators.UserValidator;
 
 import java.sql.SQLException;
 
 public class UserService {
+
+    //TODO: catch all other exception and pass as service exception
     public boolean userSignUp(User user) throws InvalidInputException, DAOException {
         UserDAO userDAO = new UserDAO();
 
@@ -28,6 +30,9 @@ public class UserService {
         return false;
 
     }
+
+
+//TODO: check the new password is already a old password
 
     public boolean forgotPassword(String emailId, String newPassword) throws InvalidInputException, DAOException, SQLException {
         UserDAO userDAO = new UserDAO();

@@ -1,8 +1,8 @@
 package com.fssa.freshtime.models;
 
 
-import com.fssa.freshtime.enums.TaskPriority;
-import com.fssa.freshtime.enums.TaskStatus;
+import com.fssa.freshtime.models.enums.TaskPriority;
+import com.fssa.freshtime.models.enums.TaskStatus;
 
 import java.time.*;
 
@@ -12,29 +12,19 @@ import java.time.*;
 public class Task {
 
     private int taskId;
-    private int userId;
     private String taskName;
-    private String taskDescription;
+    private String description;
     private LocalDate dueDate;
     private TaskPriority priority;
-    private TaskStatus taskStatus;
-    private String taskNotes;
+    private TaskStatus status;
+    private String notes;
     private LocalDateTime reminder;
-    private LocalDate createdLocalDate;
+    private LocalDate createdDate;
     private LocalDateTime createdTime;
     private LocalDateTime statusUpdatedTime;
 
 //    default constructor
-    public Task(){
-        LocalDate today = LocalDate.now();
-        this.createdLocalDate = today;
-
-        // Format the LocalTime object to display only hours and minutes
-        LocalDateTime currentTime = LocalDateTime.now();
-
-        this.createdTime = currentTime;
-    }
-
+    public Task(){}
     public int getTaskId() {
         return taskId;
     }
@@ -51,12 +41,12 @@ public class Task {
         this.taskName = taskName;
     }
 
-    public String getTaskDescription() {
-        return taskDescription;
+    public String getDescription() {
+        return description;
     }
 
-    public void setTaskDescription(String taskDescription) {
-        this.taskDescription = taskDescription;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public LocalDate getDueDate() {
@@ -75,20 +65,20 @@ public class Task {
         this.priority = priority;
     }
 
-    public TaskStatus getTaskStatus() {
-        return taskStatus;
+    public TaskStatus getStatus() {
+        return status;
     }
 
-    public void setTaskStatus(TaskStatus taskStatus) {
-        this.taskStatus = taskStatus;
+    public void setStatus(TaskStatus status) {
+        this.status = status;
     }
 
-    public String getTaskNotes() {
-        return taskNotes;
+    public String getNotes() {
+        return notes;
     }
 
-    public void setTaskNotes(String taskNotes) {
-        this.taskNotes = taskNotes;
+    public void setNotes(String notes) {
+        this.notes = notes;
     }
 
     public LocalDateTime getReminder() {
@@ -100,11 +90,11 @@ public class Task {
     }
 
     public LocalDate getCreatedDate() {
-        return createdLocalDate;
+        return createdDate;
     }
 
     public void setCreatedDate(LocalDate createdLocalDate) {
-        this.createdLocalDate = createdLocalDate;
+        this.createdDate = createdLocalDate;
     }
 
     public LocalDateTime getCreatedTime() {
@@ -123,26 +113,19 @@ public class Task {
         this.statusUpdatedTime = statusUpdatedTime;
     }
 
-    public int getUserId() {
-        return userId;
-    }
-
-    public void setUserId(int userId) {
-        this.userId = userId;
-    }
 
     @Override
     public String toString() {
         return "Task{" +
                 "\n    taskId=" + taskId +
                 ",\n    taskName='" + taskName + '\'' +
-                ",\n    taskDescription='" + taskDescription + '\'' +
+                ",\n    description='" + description + '\'' +
                 ",\n    dueDate=" + dueDate +
                 ",\n    priority='" + priority + '\'' +
-                ",\n    taskStatus='" + taskStatus + '\'' +
-                ",\n    taskNotes='" + taskNotes + '\'' +
+                ",\n    status='" + status + '\'' +
+                ",\n    notes='" + notes + '\'' +
                 ",\n    reminder=" + reminder +
-                ",\n    createdLocalDate=" + createdLocalDate +
+                ",\n    createdDate=" + createdDate +
                 ",\n    createdTime=" + createdTime +
                 '\n' + '}';
     }

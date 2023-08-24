@@ -1,33 +1,34 @@
 package com.fssa.freshtime.services;
 
-import com.fssa.freshtime.dao.TaskDAO;
-import com.fssa.freshtime.enums.TaskPriority;
-import com.fssa.freshtime.enums.TaskStatus;
+import com.fssa.freshtime.models.enums.TaskPriority;
+import com.fssa.freshtime.models.enums.TaskStatus;
 import com.fssa.freshtime.exceptions.DAOException;
-import com.fssa.freshtime.exceptions.InvalidInputException;
+import com.fssa.freshtime.exceptions.ServiceException;
+import com.fssa.freshtime.models.Subtask;
 import com.fssa.freshtime.models.Task;
+import com.fssa.freshtime.models.Tasktags;
 import com.fssa.freshtime.utils.Logger;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class TaskServiceTest {
 
+    TaskService taskService = new TaskService();
 
     Task getTask() {
         Task task = new Task();
 
         task.setTaskName("Write testcase for the validator");
-        task.setTaskDescription("Write testcase for the validator, test one valid input and two or three invalid input");
+        task.setDescription("Write testcase for the validator, test one valid input and two or three invalid input");
         task.setDueDate(LocalDate.now().plusDays(1));
         task.setPriority(TaskPriority.HIGH);
-        task.setTaskStatus(TaskStatus.INPROGRESS);
-        task.setTaskNotes("Write testcase for the validator, test one valid input and two or three invalid input");
+        task.setStatus(TaskStatus.INPROGRESS);
+        task.setNotes("Write testcase for the validator, test one valid input and two or three invalid input");
         task.setReminder(LocalDateTime.now().plusDays(1).plusMinutes(30));
 
         return task;
@@ -36,21 +37,23 @@ class TaskServiceTest {
     @Test
     void testAddTaskToDB() {
         Task task = getTask();
-        TaskService taskService = new TaskService();
-        try {
-            assertTrue(taskService.addTaskToDB(task));
-        }
-        catch (DAOException e) {
-            fail("An DAOException occurred: " + e.getMessage());
-        }
-        catch (InvalidInputException e) {
-            fail("An Invalid Input exception occurred: " + e.getMessage());
-        }
+        assertDoesNotThrow(()-> taskService.addTask(task));
     }
 
     @Test
-    void testReadTask() throws DAOException, InvalidInputException {
+    void testAddInvalidTask() {
         TaskService taskService = new TaskService();
+
+        Task invalidTask = new Task();
+        invalidTask.setTaskName("");
+
+        assertThrows(ServiceException.class, () -> taskService.addTask(invalidTask));
+    }
+
+
+    @Test
+    void testReadTask() {
+        
         try {
             List<Task> taskList = taskService.readAllTask();
 
@@ -59,172 +62,129 @@ class TaskServiceTest {
 
             for (Task task : taskList) Logger.info(task);
 
-        } catch (DAOException e) {
-            fail("An exception occurred: " + e.getMessage());
+        } catch (ServiceException e) {
+            fail("An ServiceException occurred: " + e.getMessage());
         }
     }
 
     @Test
     void testUpdateValidTaskName() {
-        TaskService taskService = new TaskService();
+        Task task = getTask();
+        task.setTaskId(1);
+        task.setTaskName("Create Model Task object");
 
         assertDoesNotThrow(() ->
-                taskService.updateTaskAttribute(7, "taskName","(Updated Task) Create Model Habit object"));
+                taskService.updateTask(task));
 
     }
 
 
     @Test
     void testUpdateInvalidTaskName() {
-        TaskService taskService = new TaskService();
+        Task task = getTask();
+        task.setTaskId(2);
+        task.setTaskName("");
 
-        assertThrows(InvalidInputException.class, () -> {
-            taskService.updateTaskAttribute(1, "taskName", "");
+        assertThrows(ServiceException.class, () -> {
+            taskService.updateTask(task);
         });
     }
 
     @Test
     void testUpdateValidTaskDescription() {
-        TaskService taskService = new TaskService();
+        Task task = getTask();
+        task.setTaskId(2);
+        task.setDescription("(Updated) Task Description");
 
         assertDoesNotThrow(() ->
-                taskService.updateTaskAttribute(7, "taskDescription", "Updated Task Description"));
+                taskService.updateTask(task));
     }
 
     @Test
     void testUpdateInValidTaskDescription() {
-        TaskService taskService = new TaskService();
+        Task task = getTask();
+        task.setTaskId(2);
+        task.setDescription("");
 
-        assertThrows(InvalidInputException.class,
-                () -> taskService.updateTaskAttribute(7, "taskDescription", ""));
+
+        assertThrows(ServiceException.class,
+                () -> taskService.updateTask(task));
     }
 
     @Test
     void testUpdateValidDueDate() {
-        TaskService taskService = new TaskService();
+        Task task = getTask();
+        task.setTaskId(2);
+        task.setDueDate(LocalDate.now());
 
         assertDoesNotThrow(() ->
-                taskService.updateTaskAttribute(7, "dueDate", LocalDate.now().plusDays(1)));
+                taskService.updateTask(task));
     }
 
     @Test
     void testUpdateInValidDueDate() {
-        TaskService taskService = new TaskService();
+        Task task = getTask();
+        task.setTaskId(2);
+        task.setDueDate(LocalDate.now().minusDays(1));
 
-        assertThrows(InvalidInputException.class,
-                () -> taskService.updateTaskAttribute(7, "dueDate", LocalDate.now().minusDays(1)));
+        assertThrows(ServiceException.class, () ->
+                taskService.updateTask(task));
     }
 
     @Test
     void testUpdateValidPriority() {
-        TaskService taskService = new TaskService();
+        Task task = getTask();
+        task.setTaskId(2);
+        task.setPriority(TaskPriority.MEDIUM);
 
         assertDoesNotThrow(() ->
-                taskService.updateTaskAttribute(7, "priority", "MEDIUM"));
-    }
-
-    @Test
-    void testUpdateInValidPriority() {
-        TaskService taskService = new TaskService();
-
-        assertThrows(InvalidInputException.class,
-                () -> taskService.updateTaskAttribute(7, "priority", "Not Important"));
-    }
-
-    @Test
-    void testUpdateValidStatus() {
-        TaskService taskService = new TaskService();
-
-        assertDoesNotThrow(() ->
-                taskService.updateTaskAttribute(7, "taskStatus", "INPROGRESS"));
-    }
-
-    @Test
-    void testUpdateInValidStatus() {
-        TaskService taskService = new TaskService();
-
-        assertThrows(InvalidInputException.class,
-            () -> taskService.updateTaskAttribute(7, "taskStatus", "Started"));
-    }
-
-    @Test
-    void testUpdateValidNotes() {
-        TaskService taskService = new TaskService();
-
-        assertDoesNotThrow(() ->
-                taskService.updateTaskAttribute(7, "taskNotes", "Updated task notes."));
-    }
-
-    @Test
-    void testUpdateInValidNotes() {
-        TaskService taskService = new TaskService();
-
-        assertThrows(InvalidInputException.class,
-                () ->taskService.updateTaskAttribute(7, "taskNotes", ""));
-    }
-
-    @Test
-    void testUpdateValidReminder() {
-        TaskService taskService = new TaskService();
-
-        assertDoesNotThrow(() ->
-            taskService.updateTaskAttribute(7, "reminder", LocalDateTime.now().plusHours(2)));
-    }
-
-    @Test
-    void testUpdateInValidReminder() {
-        TaskService taskService = new TaskService();
-
-        assertThrows(
-            InvalidInputException.class, () ->
-                    taskService.updateTaskAttribute(7, "reminder", LocalDateTime.now().minusMinutes(2))
-        );
+                taskService.updateTask(task));
     }
 
 
     @Test
     void testDeleteTaskValidId() {
-        TaskService taskService = new TaskService();
-        assertDoesNotThrow(() -> taskService.deleteTask(14));
+        assertDoesNotThrow(() -> taskService.deleteTask(9));
     }
 
     @Test
-    void testDeleteTaskInValidId() {
-        TaskService taskService = new TaskService();
-        try {
-            assertFalse(taskService.deleteTask(0));
-        }
-        catch (DAOException e) {
-            fail("An DAOException occurred: " + e.getMessage());
-        }
-        catch (InvalidInputException e) {
-            fail("An Invalid Input exception occurred: " + e.getMessage());
-        }
-
+    void testDeleteTaskInValidId()  {
+        assertThrows(ServiceException.class, () -> taskService.deleteTask(0));
     }
 
     @Test
     void testCreateTaskTag(){
-        TaskService taskService = new TaskService();
 
         assertDoesNotThrow(() -> taskService.createTaskTag(1, "Validator"));
     }
 
     @Test
-    void testReadTagsWithTask(){
-        TaskService taskService = new TaskService();
+    void testTaskTagInvalidId(){
 
+        assertThrows(ServiceException.class, () -> taskService.createTaskTag(0, "Validator"));
+    }
+
+    @Test
+    void testTaskTagNullTagName(){
+        assertThrows(ServiceException.class, () -> taskService.createTaskTag(1, null));
+    }
+
+    @Test
+    void testTaskTagInvalidTagName(){
+        assertThrows(ServiceException.class, () -> taskService.createTaskTag(1, ""));
+    }
+
+
+    @Test
+    void testReadTagsWithTask(){
         try{
-            List<ArrayList<String>> taskWithTagsList = taskService.readTaskWithTags();
+            List<Tasktags> taskWithTagsList = taskService.readTaskTags();
 
             assertNotNull(taskWithTagsList);
             assertFalse(taskWithTagsList.isEmpty());
 
-            for (ArrayList<String> taskWithTags : taskWithTagsList){
-                for(String row : taskWithTags){
-                    Logger.info(row);
-                }
-                Logger.info();
+            for (Tasktags tags : taskWithTagsList){
+                Logger.info(tags);
             }
         }
         catch (DAOException e) {
@@ -234,52 +194,91 @@ class TaskServiceTest {
 
     @Test
     void testUpdateTaskTag(){
-        TaskService taskService = new TaskService();
-        assertDoesNotThrow(() -> taskService.updateTaskTag("Another Task", 1));
+        
+        assertDoesNotThrow(() -> taskService.updateTaskTag("Updated Tag", 1));
     }
 
+    @Test
+    void testUpdateTaskTagInvalidId(){
+
+        assertThrows(ServiceException.class, () -> taskService.updateTaskTag("Updated Tag", 0));
+    }
+
+    @Test
+    void testUpdateNullTaskTag(){
+
+        assertThrows(ServiceException.class, () -> taskService.updateTaskTag(null, 1));
+    }
+
+    private Subtask getSubtask() {
+        Subtask subtask = new Subtask();
+
+        subtask.setTaskId(1);
+        subtask.setSubtaskName("Create Detailed subtask");
+        subtask.setDescription("Create Detailed subtask description");
+        subtask.setDueDate(LocalDate.now().plusDays(1));
+        subtask.setPriority(TaskPriority.MEDIUM);
+        subtask.setStatus(TaskStatus.INPROGRESS);
+        subtask.setReminder(LocalDateTime.now().plusDays(1).plusMinutes(30));
+
+        return subtask;
+    }
 
     @Test
     void testCreateSubTask(){
-        TaskService taskService = new TaskService();
+        Subtask subtask = getSubtask();
 
-        assertDoesNotThrow(() -> taskService.createSubTask(1, "Create Getters and Setters"));
+        assertDoesNotThrow(() -> taskService.createSubtask(subtask));
     }
 
     @Test
-    void testReadTaskWithSubTask(){
-        TaskService taskService = new TaskService();
+    void testCreateInvalidSubTask(){
+        Subtask subtask = getSubtask();
+        subtask.setSubtaskName("");
 
+        assertThrows(ServiceException.class, () -> taskService.createSubtask(subtask));
+    }
+
+
+    @Test
+    void testReadTaskWithSubTask(){
         try{
-            List<ArrayList<String>> taskWithSubTaskList = taskService.readTaskWithSubTask();
+            List<Subtask> taskWithSubTaskList = taskService.readSubtask();
 
             assertNotNull(taskWithSubTaskList);
             assertFalse(taskWithSubTaskList.isEmpty());
 
-            for (ArrayList<String> taskWithSubTask : taskWithSubTaskList){
-                for(String row : taskWithSubTask){
-                    Logger.info(row);
-                }
-                Logger.info();
-
+            for (Subtask subtask : taskWithSubTaskList){
+                Logger.info(subtask);
             }
         }
-        catch (DAOException e) {
-            fail("An DAOException occurred: " + e.getMessage());
+        catch (ServiceException e) {
+            fail("An Exception occurred: " + e.getMessage());
         }
     }
 
+
     @Test
-    void testUpdateSubTask(){
-        TaskService taskService = new TaskService();
-        assertDoesNotThrow(() -> taskService.updateSubTask("Another Sub Task", 2));
+    void testUpdateValidSubtask(){
+        Subtask subtask = getSubtask();
+        subtask.setSubtaskId(13);
+        subtask.setSubtaskName("(Updated) Create Detailed subtask");
+
+        assertDoesNotThrow(() -> taskService.updateSubtask(subtask));
     }
+    @Test
+    void testUpdateTaskInvalidTaskId() {
+        Subtask subtask = new Subtask();
+        subtask.setTaskId(0);
+        subtask.setTaskName("Updated Task");
+
+        assertThrows(ServiceException.class, () -> taskService.updateSubtask(subtask));
+    }
+
+
 
     @Test
     void testChangeTaskStatusAndInsertProgress() throws DAOException {
-        TaskService taskService = new TaskService();
-
         assertTrue(taskService.changeTaskStatus(TaskStatus.COMPLETED, 2));
-
     }
 }

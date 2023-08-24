@@ -1,6 +1,6 @@
 package com.fssa.freshtime.dao;
 
-import com.fssa.freshtime.enums.TaskStatus;
+import com.fssa.freshtime.models.enums.TaskStatus;
 import com.fssa.freshtime.exceptions.DAOException;
 import com.fssa.freshtime.utils.ConnectionUtil;
 
@@ -13,6 +13,11 @@ import java.util.Locale;
 import java.util.Objects;
 
 public class ProgressDAO {
+
+
+//    this progress can be calculated using java code itself you can change this progress dao as ranking system
+
+
     /**
      * Changes the status of a task and updates its progress in the database.
      *
