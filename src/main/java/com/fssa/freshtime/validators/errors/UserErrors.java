@@ -1,16 +1,32 @@
 package com.fssa.freshtime.validators.errors;
 
 public class UserErrors {
+	
+	public static final String INVALID_USER_NULL = "User can not be null";
+	
+	// For Invalid Email
+	public static final String INVALID_EMAIL_NULL = "Email cannot be null.";
+	public static final String INVALID_EMAIL_EMPTY = "Email cannot be empty.";
+	public static final String INVALID_EMAIL_FORMAT = "Invalid Email Format: Please provide a valid email address.";
 
-    public static final String INVALID_EMAIL_ID = "Invalid Email Id: Email should can not be empty or null should contain username \"@\" domain name";
-    public static final String INVALID_USERNAME = "Invalid User Name: username can not ne empty or null contains at least 3 characters and should not contains number and special character";
-    public static final String INVALID_PASSWORD = """
-            Invalid Password: It contains at least 8 characters and at most 20 characters.
-            It contains at least one digit.
-            It contains at least one upper case alphabet.
-            It contains at least one lower case alphabet.
-            It contains at least one special character.
-            It does’t contain any white space.""";
-    public static final String INVALID_PHONE_NUMBER = "Invalid Phone Number: Phone Number can not be null or empty. It must have 10 digits.";
-    public static final String INVALID_USER_NULL = "INVALID USER: User can not be null";
+	// For Invalid Username
+	public static final String INVALID_USERNAME_NULL = "Username cannot be null.";
+	public static final String INVALID_USERNAME_EMPTY = "Username cannot be empty.";
+	public static final String INVALID_USERNAME_SHORT = "Username too short: Please provide a username with at least three characters.";
+	public static final String INVALID_USERNAME_NUMERIC = "Username cannot contains numbers.";
+	public static final String INVALID_USERNAME_SPECIAL_CHAR = "Invalid Characters: Username cannot contain special characters.";
+
+	
+   //For Invalid Password
+	public static final String INVALID_PASSWORD_NULL = "Invalid Password: Password cannot be null.";
+	public static final String INVALID_PASSWORD_EMPTY = "Invalid Password: Password cannot be empty.";
+	public static final String INVALID_PASSWORD_LENGTH = "Invalid Password: Password must be between 8 characters.";
+	public static final String INVALID_PASSWORD_DIGIT = "Invalid Password: Password must contain at least one digit.";
+	public static final String INVALID_PASSWORD_UPPERCASE = "Invalid Password: Password must contain at least one uppercase letter.";
+	public static final String INVALID_PASSWORD_LOWERCASE = "Invalid Password: Password must contain at least one lowercase letter.";
+	public static final String INVALID_PASSWORD_SPECIAL_CHAR = "Invalid Password: Password must contain at least one special character.";
+	public static final String INVALID_PASSWORD_WHITESPACE = "Invalid Password: Password cannot contain whitespace.";
+
+
+	
 }

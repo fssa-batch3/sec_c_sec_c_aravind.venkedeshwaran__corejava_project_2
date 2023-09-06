@@ -31,10 +31,11 @@ public class TaskDAO {
 
     public static boolean createTask(Task task) throws DAOException {
         try (Connection connection = ConnectionUtil.getConnection()) {
-            String insertQuery = "INSERT INTO tasks (task_id, task_name, task_description, due_date, priority, " +
+            String insertQuery = "INSERT INTO tasks (user_id, task_name, task_description, due_date, priority, " +
                     "task_status, task_notes, reminder) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
             try (PreparedStatement psmt = connection.prepareStatement(insertQuery)) {
-                psmt.setInt(1, task.getTaskId());
+            	
+            	psmt.setInt(1, task.getUserId());
                 psmt.setString(2, task.getTaskName());
                 psmt.setString(3, task.getDescription());
                 psmt.setDate(4, java.sql.Date.valueOf(task.getDueDate()));
@@ -66,7 +67,7 @@ public class TaskDAO {
 
             try (PreparedStatement psmt = connection.prepareStatement(selectQuery)) {
                 try (ResultSet rs = psmt.executeQuery()) {
-                    ArrayList<Task> taskList = new ArrayList<>();
+                    List<Task> taskList = new ArrayList<>();
                     while (rs.next()) {
                         Task task = new Task();
 
@@ -90,6 +91,107 @@ public class TaskDAO {
         }
     }
 
+
+
+    /**
+     * Retrieves a list of tasks from the database.
+     *
+     * @return An ArrayList of Task objects representing the tasks retrieved.
+     * @throws DAOException If an error occurs while reading tasks.
+     */
+    public static List<Task> readTaskByUser(String emailId) throws DAOException {
+        try (Connection connection = ConnectionUtil.getConnection()) {
+            String selectQuery = "SELECT task_id, user_id, task_name, task_description, due_date, priority, task_status, " +
+                    "task_notes, reminder, created_date_time FROM tasks WHERE user_id = ?";
+
+            try (PreparedStatement psmt = connection.prepareStatement(selectQuery)) {
+                int userId = getUserIdByEmail( emailId);
+                if (userId != -1) {
+                    psmt.setInt(1, userId);
+
+                    try (ResultSet rs = psmt.executeQuery()) {
+                        List<Task> taskList = new ArrayList<>();
+                        while (rs.next()) {
+                            Task task = new Task();
+
+                            task.setTaskId(rs.getInt("task_id"));
+                            task.setUserId(rs.getInt("user_id"));
+                            task.setTaskName(rs.getString("task_name"));
+                            task.setDescription(rs.getString("task_description"));
+                            task.setDueDate(rs.getDate("due_date").toLocalDate());
+                            task.setPriority(TaskPriority.valueOf(rs.getString("priority")));
+                            task.setStatus(TaskStatus.valueOf(rs.getString("task_status")));
+                            task.setNotes(rs.getString("task_notes"));
+                            task.setReminder(rs.getTimestamp("reminder").toLocalDateTime());
+                            task.setCreatedDate(rs.getTimestamp("created_date_time").toLocalDateTime().toLocalDate());
+
+                            taskList.add(task);
+                        }
+                        return taskList;
+                    }
+                } else {
+                    throw new DAOException("User not found with email: " + emailId);
+                }
+            }
+        } catch (SQLException e) {
+            throw new DAOException("Error while reading tasks: " + e.getMessage());
+        }
+    }
+
+    
+    public static int getUserIdByEmail(String emailId) throws DAOException {
+    	try (Connection connection = ConnectionUtil.getConnection()) {
+        String query = "SELECT user_id FROM users WHERE email_Id = ?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setString(1, emailId);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    return resultSet.getInt("user_id");
+                }
+            }
+        }
+        return -1; // Return -1 if no user found with the given email
+    	}
+    	catch (SQLException e) {
+            throw new DAOException("Error while getting user id: " + e.getMessage());
+        }
+    }
+    
+    
+    public static Task readTaskByTaskId(int taskId) throws DAOException {
+        try (Connection connection = ConnectionUtil.getConnection()) {
+            String selectQuery = "SELECT task_id, task_name, task_description, due_date, priority, task_status, " +
+                    "task_notes, reminder FROM tasks WHERE task_id = ?";
+
+            try (PreparedStatement psmt = connection.prepareStatement(selectQuery)) {
+            	
+            	psmt.setInt(1, taskId);
+            	
+                    try (ResultSet rs = psmt.executeQuery()) {
+                        
+                        if (rs.next()) {
+                            Task task = new Task();
+
+                            task.setTaskId(rs.getInt("task_id"));
+                            task.setTaskName(rs.getString("task_name"));
+                            task.setDescription(rs.getString("task_description"));
+                            task.setDueDate(rs.getDate("due_date").toLocalDate());
+                            task.setPriority(TaskPriority.valueOf(rs.getString("priority")));
+                            task.setStatus(TaskStatus.valueOf(rs.getString("task_status")));
+                            task.setNotes(rs.getString("task_notes"));
+                            task.setReminder(rs.getTimestamp("reminder").toLocalDateTime());
+                            
+
+                            return task;
+                        }
+                    }
+                }
+            }catch (SQLException e) {
+	            throw new DAOException("Error while reading tasks: " + e.getMessage());
+        }
+		return null;
+    }
+    
     /**
      * Retrieves a list of all task IDs from the database.
      *
@@ -163,9 +265,6 @@ public class TaskDAO {
             try (PreparedStatement taskPsmt = connection.prepareStatement(deleteTaskQuery)) {
                 taskPsmt.setInt(1, taskId);
 
-
-                deleteSubTask(taskId);
-                deleteTaskTag(taskId);
                 int rowAffected = taskPsmt.executeUpdate();
 
                 return rowAffected > 0;
@@ -174,6 +273,7 @@ public class TaskDAO {
             throw new DAOException("Error while deleting task: " + e.getMessage());
         }
     }
+    
 
     public static boolean deleteSubTask(int taskId) throws DAOException {
         try (Connection connection = ConnectionUtil.getConnection()) {

@@ -2,7 +2,10 @@ package com.fssa.freshtime.exceptions;
 
 public class ServiceException extends Exception {
 
-    public ServiceException(String msg) {
+
+	private static final long serialVersionUID = 1L;
+
+	public ServiceException(String msg) {
         super(msg);
     }
 

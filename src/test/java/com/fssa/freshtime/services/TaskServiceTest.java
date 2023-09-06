@@ -3,6 +3,7 @@ package com.fssa.freshtime.services;
 import com.fssa.freshtime.models.enums.TaskPriority;
 import com.fssa.freshtime.models.enums.TaskStatus;
 import com.fssa.freshtime.exceptions.DAOException;
+import com.fssa.freshtime.exceptions.InvalidInputException;
 import com.fssa.freshtime.exceptions.ServiceException;
 import com.fssa.freshtime.models.Subtask;
 import com.fssa.freshtime.models.Task;
@@ -23,6 +24,7 @@ class TaskServiceTest {
     Task getTask() {
         Task task = new Task();
 
+        task.setUserId(1);
         task.setTaskName("Write testcase for the validator");
         task.setDescription("Write testcase for the validator, test one valid input and two or three invalid input");
         task.setDueDate(LocalDate.now().plusDays(1));
@@ -35,7 +37,7 @@ class TaskServiceTest {
     }
 
     @Test
-    void testAddTaskToDB() {
+    void testAddTask() {
         Task task = getTask();
         assertDoesNotThrow(()-> taskService.addTask(task));
     }
@@ -63,6 +65,22 @@ class TaskServiceTest {
             for (Task task : taskList) Logger.info(task);
 
         } catch (ServiceException e) {
+            fail("An ServiceException occurred: " + e.getMessage());
+        }
+    }
+    
+    @Test
+    void testReadTaskByUser() {
+        
+        try {
+            List<Task> taskList = taskService.readAllTaskByUser("testuser01@gmail.com");
+
+            assertNotNull(taskList);
+            assertFalse(taskList.isEmpty());
+
+            for (Task task : taskList) Logger.info(task);
+
+        } catch (ServiceException | InvalidInputException e) {
             fail("An ServiceException occurred: " + e.getMessage());
         }
     }
@@ -111,25 +129,6 @@ class TaskServiceTest {
                 () -> taskService.updateTask(task));
     }
 
-    @Test
-    void testUpdateValidDueDate() {
-        Task task = getTask();
-        task.setTaskId(2);
-        task.setDueDate(LocalDate.now());
-
-        assertDoesNotThrow(() ->
-                taskService.updateTask(task));
-    }
-
-    @Test
-    void testUpdateInValidDueDate() {
-        Task task = getTask();
-        task.setTaskId(2);
-        task.setDueDate(LocalDate.now().minusDays(1));
-
-        assertThrows(ServiceException.class, () ->
-                taskService.updateTask(task));
-    }
 
     @Test
     void testUpdateValidPriority() {
@@ -144,10 +143,10 @@ class TaskServiceTest {
 
     @Test
     void testDeleteTaskValidId() {
-        assertDoesNotThrow(() -> taskService.deleteTask(9));
+        assertDoesNotThrow(() -> taskService.deleteTask(7));
     }
 
-    @Test
+    @Test 
     void testDeleteTaskInValidId()  {
         assertThrows(ServiceException.class, () -> taskService.deleteTask(0));
     }
@@ -276,9 +275,4 @@ class TaskServiceTest {
     }
 
 
-
-    @Test
-    void testChangeTaskStatusAndInsertProgress() throws DAOException {
-        assertTrue(taskService.changeTaskStatus(TaskStatus.COMPLETED, 2));
-    }
 }

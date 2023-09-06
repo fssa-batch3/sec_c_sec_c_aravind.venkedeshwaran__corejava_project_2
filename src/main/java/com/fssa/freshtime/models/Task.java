@@ -12,6 +12,7 @@ import java.time.*;
 public class Task {
 
     private int taskId;
+    private int userId;
     private String taskName;
     private String description;
     private LocalDate dueDate;
@@ -25,12 +26,22 @@ public class Task {
 
 //    default constructor
     public Task(){}
+    
+    
     public int getTaskId() {
         return taskId;
     }
 
     public void setTaskId(int taskId) {
         this.taskId = taskId;
+    }
+    
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
     public String getTaskName() {
@@ -118,6 +129,7 @@ public class Task {
     public String toString() {
         return "Task{" +
                 "\n    taskId=" + taskId +
+                "\n    userId=" + userId +
                 ",\n    taskName='" + taskName + '\'' +
                 ",\n    description='" + description + '\'' +
                 ",\n    dueDate=" + dueDate +
@@ -129,6 +141,7 @@ public class Task {
                 ",\n    createdTime=" + createdTime +
                 '\n' + '}';
     }
+    
 
 }
 

@@ -1,6 +1,5 @@
 package com.fssa.freshtime.services;
 
-import com.fssa.freshtime.dao.ProgressDAO;
 import com.fssa.freshtime.dao.TaskDAO;
 import com.fssa.freshtime.models.enums.TaskStatus;
 import com.fssa.freshtime.exceptions.DAOException;
@@ -10,6 +9,7 @@ import com.fssa.freshtime.models.Subtask;
 import com.fssa.freshtime.models.Task;
 import com.fssa.freshtime.models.Tasktags;
 import com.fssa.freshtime.validators.TaskValidator;
+import com.fssa.freshtime.validators.UserValidator;
 
 import java.util.List;
 
@@ -57,13 +57,53 @@ public class TaskService {
             throw new ServiceException("Error while reading task: " + e.getMessage());
         }
     }
+    
+    public int getUserIdByEmail(String emailId) throws ServiceException {
+        try {
+            
+            if(UserValidator.validateEmailId(emailId)) {
+            	return TaskDAO.getUserIdByEmail(emailId);
+            }
+        } catch (DAOException | InvalidInputException e) {
+            throw new ServiceException("Error while getting user id: " + e.getMessage(), e);
+        }
+		return -1;
+    }
+    
+    
+    
+    public List<Task> readAllTaskByUser(String emailId) throws ServiceException, InvalidInputException {
+        try {
+        	if(UserValidator.validateEmailId(emailId)) {
+        		return TaskDAO.readTaskByUser(emailId);
+        	}
+        }
+        catch (InvalidInputException| DAOException e) {
+            throw new ServiceException("Error while reading task: " + e.getMessage());
+        }
+		return null;
+    }
 
+    
+    public Task readAllTaskByTaskId(int taskId) throws ServiceException, InvalidInputException {
+        try {
+        	if(TaskDAO.getAllIds().contains(taskId)) {
+        		return TaskDAO.readTaskByTaskId(taskId);
+        	}
+        }
+        catch (DAOException e) {
+            throw new ServiceException("Error while reading task: " + e.getMessage());
+        }
+		return null;
+    }
 
 
     public boolean updateTask(Task task) throws ServiceException {
         try {
             if(TaskDAO.getAllIds().contains(task.getTaskId())) {
-                if(TaskValidator.validate(task)) {
+                if( TaskValidator.validateTaskName(task.getTaskName()) &&
+            		TaskValidator.validateTaskDescription(task.getDescription()) &&
+            		TaskValidator.validateTaskNotes(task.getNotes())) {
                     return TaskDAO.updateTask(task);
                 }
             }
@@ -227,8 +267,8 @@ public class TaskService {
      * @return True if the task status change is successful, false otherwise.
      * @throws DAOException If an error occurs while changing the task status.
      */
-    public boolean changeTaskStatus(TaskStatus taskStatus, int taskId) throws DAOException {
-        return ProgressDAO.changeTaskStatus(taskStatus, taskId);
-    }
+//    public boolean changeTaskStatus(TaskStatus taskStatus, int taskId) throws DAOException {
+//        return ProgressDAO.changeTaskStatus(taskStatus, taskId);
+//    }
 
 }

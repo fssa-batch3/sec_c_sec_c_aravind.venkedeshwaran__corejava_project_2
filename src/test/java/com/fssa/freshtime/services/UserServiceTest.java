@@ -1,7 +1,6 @@
 package com.fssa.freshtime.services;
 
-import com.fssa.freshtime.exceptions.DAOException;
-import com.fssa.freshtime.exceptions.InvalidInputException;
+import com.fssa.freshtime.exceptions.ServiceException;
 import com.fssa.freshtime.models.User;
 import org.junit.jupiter.api.Test;
 
@@ -9,26 +8,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class UserServiceTest {
 
-//    TODO: create user already in database and check login, delete and forgot password.
-
-    static String currentUserEmail;
-    static String currentUserPass;
-
-    public static void setCurrentUserEmail(String currentUserEmail) {
-        UserServiceTest.currentUserEmail = currentUserEmail;
-    }
-
-    public static void setCurrentUserPass(String currentUserPass) {
-        UserServiceTest.currentUserPass = currentUserPass;
-    }
-
-    public static String getCurrentUserEmail() {
-        return currentUserEmail;
-    }
-
-    public static String getCurrentUserPass() {
-        return currentUserPass;
-    }
+    UserService userService = new UserService();
 
     private User getUser() {
         User user = new User();
@@ -41,87 +21,56 @@ class UserServiceTest {
     }
 
     @Test
-    void testUserSignUpValidInput() {
-        UserService userService = new UserService();
+    void testValidUserSignUp() {
         User user = getUser();
-
         assertDoesNotThrow(() -> userService.userSignUp(user));
-
-        System.out.println("User Email: " + user.getEmailId());
-        System.out.println("User Password: " + user.getPassword());
     }
 
-
-
-
-
     @Test
-    void testUserSignUpInvalidInput() {
-        UserService userService = new UserService();
+    void testUserSignUpInvalidUserName() {
         User user = getUser();
-
         user.setUserName("Aravind21");
-
-        assertThrows(InvalidInputException.class, () -> userService.userSignUp(user));
+        assertThrows(ServiceException.class, () -> userService.userSignUp(user));
     }
 
-
-
     @Test
-    void testUserLoginValidInput() {
-        UserService userService = new UserService();
-
-//        System.out.println();
-//        System.out.println();
-        String getCurrentUserPass;
-
-//        assertDoesNotThrow(() -> userService.userLogin(currentUserEmail, currentUserPass));
+    void testValidUserLogin() {
+    	
+    	assertDoesNotThrow(() -> userService.userLogin("testuser01@gmail.com", "P@$$w0rd"));
     }
 
     @Test
     void testUserLoginInvalidInput() {
-        UserService userService = new UserService();
-
-        assertThrows(InvalidInputException.class, () -> userService.userLogin("", "weakPassword"));
+        assertThrows(ServiceException.class, () -> userService.userLogin("", "weakPassword"));
     }
 
     @Test
     void testForgotPasswordValidInput() {
-        UserService userService = new UserService();
 
-        User user = getUser();
-
-        assertDoesNotThrow(() -> userService.forgotPassword(user.getEmailId(), "ChangedP@$$w0rd"));
+        assertDoesNotThrow(() -> userService.forgotPassword("testuser01@gmail.com", "ChangedP@$$w0rd"));
     }
 
     @Test
     void testForgotPasswordInvalidInput() {
-        UserService userService = new UserService();
+        
 
-        assertThrows(DAOException.class, () -> userService.forgotPassword("notmyemail@gmail.com", "Aravind@21"));
+        assertThrows(ServiceException.class, () -> userService.forgotPassword("notmyemail@gmail.com", "Aravind@21"));
     }
 
 
     @Test
     void testDeleteUserValidInput() {
-        UserService userService = new UserService();
-        User user = getUser();
-
-        assertDoesNotThrow(() -> userService.deleteUser(user.getEmailId(), "ChangedP@$$w0rd"));
+       
+        assertDoesNotThrow(() -> userService.deleteUser("testDelete@gmail.com"));
     }
 
     @Test
     void testDeleteUserInvalidInput() {
-        UserService userService = new UserService();
-
-        assertThrows(InvalidInputException.class, () -> userService.deleteUser("sample@gmail.com", "WrongPassword"));
+        
+        assertThrows(ServiceException.class, () -> userService.deleteUser("notmyemail@gmail.com"));
     }
 
 
-    public static void main(String[] args) {
-        System.out.println("User Email: " + currentUserEmail);
-        System.out.println("User Password: " + currentUserPass);
-    }
 
 }
 

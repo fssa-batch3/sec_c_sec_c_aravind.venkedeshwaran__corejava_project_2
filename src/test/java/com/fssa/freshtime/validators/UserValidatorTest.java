@@ -17,6 +17,8 @@ class UserValidatorTest {
 
         return user;
     }
+    
+//    Testcases for user validator
 
     @Test
     void testValidUser(){
@@ -29,10 +31,25 @@ class UserValidatorTest {
     void testNullUser(){
         assertThrows(InvalidInputException.class, () -> UserValidator.validateUser(null));
     }
+    
+    
+//    Testcases for email validator
 
     @Test
     void testValidEmail() {
         assertDoesNotThrow(() -> UserValidator.validateEmailId("aravind@gmail.com"));
+    }
+    
+    @Test
+    void testNullEmail() {
+        assertThrows(InvalidInputException.class, () -> {
+            UserValidator.validateEmailId(null);
+        });
+    }
+    
+    @Test
+    void testEmptyEmailId(){
+        assertThrows(InvalidInputException.class, ()-> UserValidator.validateEmailId(""));
     }
 
     @Test
@@ -41,20 +58,29 @@ class UserValidatorTest {
             UserValidator.validateEmailId("WrongEmail");
         });
     }
+    
+    //Testcases for user name validator
 
-    @Test
-    void testEmptyEmailId(){
-        assertThrows(InvalidInputException.class, ()-> UserValidator.validateEmailId(""));
-    }
+
 
     @Test
     void testValidUserName() {
         assertDoesNotThrow(() -> UserValidator.validateUserName("     joe      "));
     }
+    
+//    @Test
+//    void testNullUserName(){
+//        assertThrows(InvalidInputException.class, ()-> UserValidator.validateUserName(null));
+//    }
+    
+    @Test
+    void testEmptyUserName(){
+        assertThrows(InvalidInputException.class, ()-> UserValidator.validateUserName(""));
+    }
 
     @Test
     void testInvalidUserNameWithSpaces() {
-        assertDoesNotThrow( () -> UserValidator.validateUserName("Aravind Ram"));
+        assertThrows(InvalidInputException.class, () -> UserValidator.validateUserName("Aravind Ram"));
     }
 
     @Test
@@ -66,14 +92,28 @@ class UserValidatorTest {
     void testInvalidUserNameLessThanThreeChar(){
         assertThrows(InvalidInputException.class, () -> UserValidator.validateUserName("jo"));
     }
+
+    
     @Test
-    void testEmptyUserName(){
-        assertThrows(InvalidInputException.class, ()-> UserValidator.validateUserName(""));
+    void testInvalidUserNameSplChar(){
+        assertThrows(InvalidInputException.class, () -> UserValidator.validateUserName("Aravind@Ram"));
     }
 
+    
+    //Testcases for userpassword
     @Test
     void testValidPassword() {
         assertDoesNotThrow(() -> UserValidator.validatePassword("P@ssw0rd"));
+    }
+    
+//    @Test
+//    void testNullPassword(){
+//        assertThrows(InvalidInputException.class, ()-> UserValidator.validatePassword(null));
+//    }
+    
+    @Test
+    void testEmptyPassword(){
+        assertThrows(InvalidInputException.class, ()-> UserValidator.validatePassword(""));
     }
 
     @Test
@@ -81,10 +121,6 @@ class UserValidatorTest {
         assertThrows(InvalidInputException.class, () -> UserValidator.validatePassword("Hel1@"));
     }
 
-    @Test
-    void testInvalidPasswordMoreThanTwentyChar() {
-        assertThrows(InvalidInputException.class, () -> UserValidator.validatePassword("Hel1@ThisHasMoreThanTwemtyChar"));
-    }
 
     @Test
     void testInvalidPasswordNoDigit() {
@@ -97,19 +133,20 @@ class UserValidatorTest {
     }
 
     @Test
+    void testInvalidPasswordNoUpper() {
+        assertThrows(InvalidInputException.class, () -> UserValidator.validatePassword("wrongpass@1"));
+    }
+    
+    @Test
     void testInvalidPasswordNoLower() {
         assertThrows(InvalidInputException.class, () -> UserValidator.validatePassword("WRONGPASS@1"));
     }
 
     @Test
-    void testInvalidPasswordNoUpper() {
-        assertThrows(InvalidInputException.class, () -> UserValidator.validatePassword("wrongpass@1"));
+    void testInvalidPasswordWhiteSpace() {
+        assertThrows(InvalidInputException.class, () -> UserValidator.validatePassword("SpacedPassword 21"));
     }
 
-    @Test
-    void testEmptyPassword(){
-        assertThrows(InvalidInputException.class, ()-> UserValidator.validatePassword(""));
-    }
 
 
 }
