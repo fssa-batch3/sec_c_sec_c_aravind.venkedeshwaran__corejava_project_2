@@ -17,16 +17,20 @@ INSERT INTO users (email_id, user_name, password) VALUES
 ("testuser03@gmail.com", "TestNameThree",  "P@$$w0rd"),
 ("testDelete@gmail.com", "Deletable user",  "P@$$w0rd");
 
+-- INSERT INTO users (email_id, user_name, password) VALUES 
+-- ("testDelete@gmail.com", "Deletable user",  "P@$$w0rd");
+
+
 CREATE TABLE tasks(
     task_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     user_id INT NOT NULL,
     task_name VARCHAR(255) NOT NULL,
-    task_description VARCHAR(255),
-    due_date DATE,
-    priority VARCHAR(50) CHECK (priority IN ('LOW', 'MEDIUM', 'HIGH')),
-    task_status VARCHAR(50) CHECK (task_status IN ('NOTSTARTED', 'SCHEDULED', 'INPROGRESS', 'COMPLETED', 'OVERDUE', 'CANCELLED')),
-    task_notes VARCHAR(255), 
-    reminder DATETIME,
+    task_description VARCHAR(255 ) NOT NULL,
+    due_date DATE NOT NULL,
+    priority VARCHAR(50) NOT NULL CHECK (priority IN ('LOW', 'MEDIUM', 'HIGH')),
+    task_status VARCHAR(50) NOT NULL CHECK (task_status IN ('NOTSTARTED', 'SCHEDULED', 'INPROGRESS', 'COMPLETED', 'OVERDUE', 'CANCELLED')),
+    task_notes VARCHAR(255) NOT NULL, 
+    reminder DATETIME NOT NULL,
     created_date_time DATETIME DEFAULT NOW() NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
