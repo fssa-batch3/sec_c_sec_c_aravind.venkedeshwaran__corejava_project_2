@@ -10,9 +10,6 @@ public class NotesValidator {
 	        throw new InvalidInputException("Note cannot be null");
 	    }
 
-	    if (note.getNotesCategory() == null || note.getNotesCategory().isEmpty()) {
-	        throw new InvalidInputException("Notes category cannot be null or empty");
-	    }
 
 	    if (note.getHeading() == null || note.getHeading().isEmpty()) {
 	        throw new InvalidInputException("Heading cannot be null or empty");

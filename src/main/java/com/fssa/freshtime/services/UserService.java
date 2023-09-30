@@ -5,6 +5,7 @@ import com.fssa.freshtime.exceptions.DAOException;
 import com.fssa.freshtime.exceptions.InvalidInputException;
 import com.fssa.freshtime.exceptions.ServiceException;
 import com.fssa.freshtime.models.User;
+import com.fssa.freshtime.utils.Logger;
 import com.fssa.freshtime.validators.UserValidator;
 
 import java.sql.SQLException;
@@ -14,7 +15,7 @@ public class UserService {
 	UserDAO userDAO = new UserDAO();
 
 	public boolean userSignUp(User user) throws ServiceException {
-
+		Logger.info("Inserting user in db");
 		try {
 			if (UserValidator.validateUser(user))
 				return userDAO.userRegistration(user);
@@ -27,7 +28,7 @@ public class UserService {
 	}
 
 	public boolean deleteUser(String emailId) throws ServiceException{
-
+		Logger.info("Deleting user in db");
 		try {
 			if (UserValidator.validateEmailId(emailId)) {
 				if(userDAO.emailExists(emailId)) {
@@ -47,6 +48,7 @@ public class UserService {
 	}
 	
 	public boolean userLogin(String emailId, String password) throws ServiceException {
+		Logger.info("checking email and pass in db");
 	    try {
 			if (UserValidator.validateEmailId(emailId) && UserValidator.validatePassword(password)) {
 			    if (userDAO.emailExists(emailId)) {
@@ -63,6 +65,7 @@ public class UserService {
 
 
 	public User getUserByEmail(String emailId) throws ServiceException {
+		Logger.info("Getting user by email in db");
 	    try {
 			if (UserValidator.validateEmailId(emailId)) {
 			    if (userDAO.emailExists(emailId)) {
@@ -74,11 +77,11 @@ public class UserService {
 		} catch (InvalidInputException | DAOException e) {
 			throw new ServiceException(e.getMessage());
 		}
-	    return null; // Invalid email format
+	    return null;
 	}
 	
 	public boolean forgotPassword(String emailId, String newPassword)throws ServiceException {
-		
+		Logger.info("Changing pass in db");
 	    try {
 			if (UserValidator.validateEmailId(emailId) && UserValidator.validatePassword(newPassword)) {
 				
@@ -97,6 +100,7 @@ public class UserService {
 	
 
 	 public boolean updateUserProfile(User user) throws ServiceException {
+		 Logger.info("updating user in db");
 	        try {
 	            if(UserValidator.validateUser(user)) {
 		            if (userDAO.emailExists(user.getEmailId())) {

@@ -6,6 +6,7 @@ import com.fssa.freshtime.exceptions.InvalidInputException;
 import com.fssa.freshtime.models.Subtask;
 import com.fssa.freshtime.models.Task;
 import java.time.*;
+import java.time.format.DateTimeFormatter;
 
 
 /**
@@ -25,25 +26,10 @@ public class TaskValidator {
         }
 
         validateTaskName(task.getTaskName());
-        validateTaskDescription(task.getDescription());
-        validateDueDate(task.getDueDate());
+        validateStartDate(task.getStartDate());
+        validateEndDate(task.getEndDate());
         validateTaskNotes(task.getNotes());
         validateReminder(task.getReminder());
-
-        return true;
-    }
-
-    //TODO: ask if this ok or not
-    public static boolean validateSubtask(Subtask subtask) throws InvalidInputException {
-
-        if(subtask == null){
-            throw new InvalidInputException(TaskErrors.TASK_NULL);
-        }
-
-        validateTaskName(subtask.getSubtaskName());
-        validateTaskDescription(subtask.getDescription());
-        validateDueDate(subtask.getDueDate());
-        validateReminder(subtask.getReminder());
 
         return true;
     }
@@ -71,44 +57,46 @@ public class TaskValidator {
         return true;
     }
 
+
+    static LocalDateTime now = LocalDateTime.now();
+    static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    static String formattedTime = now.format(formatter);
+    static LocalDateTime currentTime = LocalDateTime.parse(formattedTime, formatter);
+
+    
     /**
-     * Validates the task description.
+     * Validates the task startdate.
      *
-     * @param taskDescription The task description to be validated.
-     * @return true if the task description is valid, throws an InvalidInputException if invalid.
+     * @param start Date of the task to be validated.
+     * @return true if the start date is valid, throws an InvalidInputException if invalid.
      */
-    public static boolean validateTaskDescription(String taskDescription)  throws InvalidInputException {
-
-        if (taskDescription == null) {
-            throw new InvalidInputException(TaskErrors.INVALID_TASK_DESCRIPTION_NULL);
+    public static boolean validateStartDate(LocalDateTime startDate) throws InvalidInputException {
+        
+        if(startDate == null){
+            throw new InvalidInputException(TaskErrors.INVALID_DATE_NULL);
         }
 
-        if(taskDescription.trim().length() < ValidatorConstants.SHORT_MIN_LEN){
-            throw new InvalidInputException(TaskErrors.INVALID_TASK_DESCRIPTION_LESS_THAN_TEN_CHAR);
-        }
-
-        if(taskDescription.trim().length() > ValidatorConstants.VERY_LONG_MAX_LEN) {
-            throw new InvalidInputException(TaskErrors.INVALID_TASK_NOTES_MORE_THAN_ONEFIFTY_CHAR);
+        if (startDate.isBefore(currentTime)) {
+            throw new InvalidInputException(TaskErrors.INVALID_DATE_BEFORE_DATE);
         }
 
         return true;
     }
-
+    
     /**
-     * Validates the task due date.
+     * Validates the task enddate.
      *
-     * @param dueDate The task due date to be validated.
-     * @return true if the due date is valid, throws an InvalidInputException if invalid.
+     * @param end Date of the task to be validated.
+     * @return true if the end date is valid, throws an InvalidInputException if invalid.
      */
-    public static boolean validateDueDate(LocalDate dueDate) throws InvalidInputException {
-        LocalDate today = LocalDate.now();
-
-        if(dueDate == null){
-            throw new InvalidInputException(TaskErrors.INVALID_DUEDATE_NULL);
+    public static boolean validateEndDate(LocalDateTime endDate) throws InvalidInputException {
+        
+        if(endDate == null){
+            throw new InvalidInputException(TaskErrors.INVALID_DATE_NULL);
         }
 
-        if (dueDate.isBefore(today)) {
-            throw new InvalidInputException(TaskErrors.INVALID_DUEDATE_BEFORE_DATE);
+        if (endDate.isBefore(currentTime)) {
+            throw new InvalidInputException(TaskErrors.INVALID_DATE_BEFORE_DATE);
         }
 
         return true;
@@ -147,7 +135,7 @@ public class TaskValidator {
         LocalDateTime now = LocalDateTime.now();
 
         if(reminder == null){
-            throw new InvalidInputException(TaskErrors.INVALID_REMINDER_NULL);
+            throw new InvalidInputException(TaskErrors.INVALID_REMINDER_NULL); 
         }
 
         if(reminder.isEqual(now)) {
@@ -161,15 +149,6 @@ public class TaskValidator {
         return true;
     }
 
-    public static boolean validateTag(String taskTag) throws InvalidInputException {
-        if(taskTag == null){
-            throw new InvalidInputException(TaskErrors.TASKTAG_NULL);
-        }
-        if(taskTag.length() < ValidatorConstants.VERY_SHORT_MIN_LEN) {
-            throw new InvalidInputException(TaskErrors.INVALID_TAG);
-        }
-        return true;
-    }
 
 
 }

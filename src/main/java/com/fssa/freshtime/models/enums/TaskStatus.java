@@ -1,12 +1,11 @@
 package com.fssa.freshtime.models.enums;
 
 public enum TaskStatus {
-    NOTSTARTED,
-    SCHEDULED,
+    TODO,
     INPROGRESS,
     COMPLETED,
-    OVERDUE,
-    CANCELLED;
+    BLOCKER,
+    OVERDUE;
 }
 
 

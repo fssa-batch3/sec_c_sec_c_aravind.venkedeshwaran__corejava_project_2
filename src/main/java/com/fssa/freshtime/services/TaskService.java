@@ -1,7 +1,9 @@
 package com.fssa.freshtime.services;
 
 import com.fssa.freshtime.dao.TaskDAO;
+import com.fssa.freshtime.dao.UserDAO;
 import com.fssa.freshtime.models.enums.TaskStatus;
+import com.fssa.freshtime.utils.Logger;
 import com.fssa.freshtime.exceptions.DAOException;
 import com.fssa.freshtime.exceptions.InvalidInputException;
 import com.fssa.freshtime.exceptions.ServiceException;
@@ -18,257 +20,225 @@ import java.util.List;
  */
 public class TaskService {
 
-    public static final String INVALID_TASK_ID = "Invalid Task Id";
-    /**
-     * Adds a task to the database.
-     *
-     * @param task The task to be added.
-     * @return True if the task is valid and successfully added, false otherwise.
-     * @throws DAOException If there's an issue with database operations.
-     * @throws InvalidInputException If the task is invalid.
-     */
+	public static final String INVALID_TASK_ID = "Invalid Task Id";
+	
+	UserService userservice = new UserService();
 
-    public boolean addTask(Task task) throws ServiceException {
-        try {
-            if (TaskValidator.validate(task)) {
-                return TaskDAO.createTask(task);
-            } else {
-                return false;
-            }
-        } catch (InvalidInputException | DAOException e) {
-            throw new ServiceException("Error while adding task: " + e.getMessage());
-        }
-    }
+	/**
+	 * Adds a task to the database.
+	 *
+	 * @param task The task to be added.
+	 * @return True if the task is valid and successfully added, false otherwise.
+	 * @throws DAOException          If there's an issue with database operations.
+	 * @throws InvalidInputException If the task is invalid.
+	 */
+
+	public boolean addTask(int userId, String taskName) throws ServiceException {
+		Logger.info("Adding Task in db");
+		try {
+			if (TaskValidator.validateTaskName(taskName)) {
+				return TaskDAO.addTask(userId, taskName);
+			}
+		} catch (InvalidInputException | DAOException e) {
+			throw new ServiceException("Error while adding task: " + e.getMessage());
+		}
+		return false;
+	}
 
 
-
-
-    /**
-     * Retrieves a list of all tasks from the database.
-     *
-     * @return An ArrayList containing all tasks.
-     * @throws DAOException If there's an issue with database operations.
-     */
-    public List<Task> readAllTask() throws ServiceException {
-        try {
-            return TaskDAO.readTask();
-        }
-        catch (DAOException e) {
-            throw new ServiceException("Error while reading task: " + e.getMessage());
-        }
-    }
-    
-    public int getUserIdByEmail(String emailId) throws ServiceException {
-        try {
-            
-            if(UserValidator.validateEmailId(emailId)) {
-            	return TaskDAO.getUserIdByEmail(emailId);
-            }
-        } catch (DAOException | InvalidInputException e) {
-            throw new ServiceException("Error while getting user id: " + e.getMessage(), e);
-        }
-		return -1;
-    }
-    
-    
-    
-    public List<Task> readAllTaskByUser(String emailId) throws ServiceException, InvalidInputException {
-        try {
-        	if(UserValidator.validateEmailId(emailId)) {
-        		return TaskDAO.readTaskByUser(emailId);
-        	}
-        }
-        catch (InvalidInputException| DAOException e) {
-            throw new ServiceException("Error while reading task: " + e.getMessage());
-        }
+	public List<Task> readAllTaskByUser(int userId) throws ServiceException, InvalidInputException {
+		Logger.info("Reading Tasks by user id in db");
+		try {
+			if (TaskDAO.getAllIds().contains(userId)) {
+				return TaskDAO.readTaskByUser(userId);
+			}
+		} catch (DAOException e) {
+			throw new ServiceException("Error while reading task: " + e.getMessage());
+		}
 		return null;
-    }
+	}
 
-    
-    public Task readAllTaskByTaskId(int taskId) throws ServiceException, InvalidInputException {
-        try {
-        	if(TaskDAO.getAllIds().contains(taskId)) {
-        		return TaskDAO.readTaskByTaskId(taskId);
-        	}
-        }
-        catch (DAOException e) {
-            throw new ServiceException("Error while reading task: " + e.getMessage());
-        }
+	public Task readTaskByTaskId(int taskId) throws ServiceException, InvalidInputException {
+		Logger.info("Reading All Task by task id in db");
+		try {
+			if (TaskDAO.getAllIds().contains(taskId)) {
+				return TaskDAO.readTaskByTaskId(taskId);
+			}
+		} catch (DAOException e) {
+			throw new ServiceException("Error while reading task: " + e.getMessage());
+		}
 		return null;
-    }
+	}
+
+	public boolean updateTask(Task task) throws ServiceException {
+		Logger.info("updating Task in db");
+		try {
+			if(task != null) {
+				if (TaskDAO.getAllIds().contains(task.getTaskId())) {
+					
+				    boolean isValid = true;
+					    
+				    if (task.getTaskName() != null) {
+				        isValid &= TaskValidator.validateTaskName(task.getTaskName());
+				    }
+				    
+				    if (task.getStartDate() != null) {
+				        isValid &= TaskValidator.validateStartDate(task.getStartDate());
+				    }
+				    
+				    if (task.getEndDate() != null) {
+				        isValid &= TaskValidator.validateEndDate(task.getEndDate());
+				    }
+				    
+				    if (task.getReminder() != null) {
+				        isValid &= TaskValidator.validateReminder(task.getReminder());
+				    }
+				    
+				    if (task.getNotes() != null) {
+				        isValid &= TaskValidator.validateTaskNotes(task.getNotes());
+				    }
+				    
+				    if (isValid) {
+				        return TaskDAO.updateTask(task);
+				    }
+	
+				} else {
+					throw new ServiceException(INVALID_TASK_ID);
+				}
+			}
+			else {
+				throw new ServiceException("Task Can Not be null");
+			}
+		} catch (InvalidInputException | DAOException e) {
+			throw new ServiceException("Error while updating task: " + e.getMessage());
+		}
+		return false;
+	}
+
+	/**
+	 * Deletes a task from the database.
+	 *
+	 * @param taskId The ID of the task to be deleted.
+	 * @return True if the task is successfully deleted, false otherwise.
+	 * @throws DAOException          If there's an issue with database operations.
+	 * @throws InvalidInputException If the task ID is invalid.
+	 */
+	public boolean deleteTask(int taskId) throws ServiceException {
+		Logger.info("Deleting Task in db");
+		try {
+			if (TaskDAO.getAllIds().contains(taskId)) {
+				return TaskDAO.deleteTask(taskId);
+			} else {
+				throw new ServiceException(INVALID_TASK_ID);
+			}
+		} catch (DAOException e) {
+			throw new ServiceException(e.getMessage());
+		}
+	}
 
 
-    public boolean updateTask(Task task) throws ServiceException {
-        try {
-            if(TaskDAO.getAllIds().contains(task.getTaskId())) {
-                if( TaskValidator.validateTaskName(task.getTaskName()) &&
-            		TaskValidator.validateTaskDescription(task.getDescription()) &&
-            		TaskValidator.validateTaskNotes(task.getNotes())) {
-                    return TaskDAO.updateTask(task);
-                }
-            }
-            else{
-                throw new ServiceException(INVALID_TASK_ID);
-            }
-        } catch (InvalidInputException | DAOException e) {
-            throw new ServiceException("Error while updating task: " + e.getMessage());
-        }
-        return false;
-    }
+	public boolean createSubtask(Subtask subtask) throws ServiceException {
+		Logger.info("Inserting Sub Task in db");
+		try {
+			if (TaskDAO.getAllIds().contains(subtask.getTaskId())) {
+				if (TaskValidator.validateTaskName(subtask.getSubtaskName())) {
+					return TaskDAO.createSubTask(subtask);
+				}
+			} else {
+				throw new ServiceException("Invalid Task Id: Task Id don't exist.");
+			}
+		} catch (DAOException | InvalidInputException e) {
+			throw new ServiceException("Error while creating subtask: " + e.getMessage());
+		}
+		return false;
+	}
 
+	public List<Subtask> readAllSubTaskByTaskId(int taskId) throws ServiceException, InvalidInputException {
+		Logger.info("Reading Sub Task by Task id in db");
+		try {
+			return TaskDAO.readAllSubTaskByTaskId(taskId);
+		} catch (DAOException e) {
+			throw new ServiceException("Error while reading Subtask: " + e.getMessage());
+		}
+	}
 
+	public Subtask readSubTaskById(int subtaskId) throws ServiceException, InvalidInputException {
+		Logger.info("Reading Sub Task by SubTask id in db");
+		try {
+			if (TaskDAO.getAllSubtaskIds().contains(subtaskId)) {
+				return TaskDAO.readSubTaskById(subtaskId);
+			} else {
+				throw new ServiceException("Invalid Sub Task Id: Subtask Id doesn't exist,");
+			}
+		} catch (DAOException e) {
+			throw new ServiceException("Error while reading Subtask: " + e.getMessage());
+		}
+	}
 
+	/**
+	 * Updates a specific subtask in the database.
+	 *
+	 * @param subtask The new subtask value.
+	 * @return True if the subtask value is valid and successfully updated, false
+	 *         otherwise.
+	 * @throws DAOException          If there's an issue with database operations.
+	 * @throws InvalidInputException If the subtask value is invalid.
+	 */
+	public boolean updateSubtask(Subtask subtask) throws ServiceException {
+		Logger.info("Updating Sub Task in db");
+		try {
+			if (subtask != null) {
+				if (TaskDAO.getAllSubtaskIds().contains(subtask.getSubtaskId())) {
+					
+					boolean isValid = true;
+					
+				    if (subtask.getSubtaskName() != null) {
+				        isValid &= TaskValidator.validateTaskName(subtask.getSubtaskName());
+				    }
+				    
+				    if (subtask.getStartDate() != null) {
+				        isValid &= TaskValidator.validateStartDate(subtask.getStartDate());
+				    }
+				    
+				    if (subtask.getEndDate() != null) {
+				        isValid &= TaskValidator.validateEndDate(subtask.getEndDate());
+				    }
+				    
+				    if (subtask.getReminder() != null) {
+				        isValid &= TaskValidator.validateReminder(subtask.getReminder());
+				    }
+				    
+				    if (subtask.getNotes() != null) {
+				        isValid &= TaskValidator.validateTaskNotes(subtask.getNotes());
+				    }
+				    
+				    if (isValid) {
+				    	return TaskDAO.updatesubtask(subtask);
+				    }
+					
+				} else {
+					throw new ServiceException("Invalid Subtask Id");
+				}
+			} else {
+				throw new ServiceException("Subtask can not be null");
+			}
+		} catch (DAOException | InvalidInputException e) {
+			throw new ServiceException("Error while updating subtask: " + e.getMessage());
+		}
+		return false;
+	}
 
-    /**
-     * Deletes a task from the database.
-     *
-     * @param taskId The ID of the task to be deleted.
-     * @return True if the task is successfully deleted, false otherwise.
-     * @throws DAOException If there's an issue with database operations.
-     * @throws InvalidInputException If the task ID is invalid.
-     */
-    public boolean deleteTask(int taskId) throws ServiceException {
-        try {
-            if (TaskDAO.getAllIds().contains(taskId)) {
-                return TaskDAO.deleteTask(taskId);
-            }
-            else{
-                throw new ServiceException(INVALID_TASK_ID);
-            }
-        }
-        catch (DAOException e){
-            throw new ServiceException(e.getMessage());
-        }
-    }
-
-
-
-
-    /**
-     * Creates a new tag for a specific task in the database.
-     *
-     * @param taskId The ID of the task to associate with the new tag.
-     * @param tag    The tag to be created.
-     * @return True if the tag is valid and successfully created, false otherwise.
-     * @throws DAOException If there's an issue with database operations.
-     * @throws InvalidInputException If the tag is invalid.
-     */
-    public boolean createTaskTag(int taskId, String tag) throws ServiceException {
-        try {
-            if (TaskDAO.getAllIds().contains(taskId)) {
-                if (TaskValidator.validateTag(tag)) {
-                    return TaskDAO.createTags(taskId, tag);
-                }
-                return false;
-            } else {
-                throw new ServiceException(INVALID_TASK_ID);
-            }
-        }
-        catch(DAOException| InvalidInputException e){
-            throw new ServiceException(e.getMessage());
-        }
-    }
-
-    /**
-     * Retrieves a list of tasks along with their associated tags from the database.
-     *
-     * @return An ArrayList of ArrayLists, where each inner ArrayList contains task ID and its tags.
-     * @throws DAOException If there's an issue with database operations.
-     */
-    public List<Tasktags> readTaskTags() throws DAOException {
-        return TaskDAO.readTaskTags();
-    }
-
-    /**
-     * Updates the tag for a specific task in the database.
-     *
-     * @param tagName The new name for the tag.
-     * @param taskId  The ID of the task to be associated with the updated tag.
-     * @return True if the tag name is valid and successfully updated, false otherwise.
-     * @throws DAOException If there's an issue with database operations.
-     * @throws InvalidInputException If the tag name is invalid.
-     */
-    public boolean updateTaskTag(String tagName, int taskId) throws ServiceException {
-        try{
-            if(TaskDAO.getAllIds().contains(taskId)) {
-                if (TaskValidator.validateTag(tagName)) {
-                    return TaskDAO.updateTagName(tagName, taskId);
-                } else {
-                    return false;
-                }
-            }
-            else{
-                throw new ServiceException(INVALID_TASK_ID);
-            }
-        }
-        catch (InvalidInputException | DAOException e){
-            throw new ServiceException(e.getMessage());
-        }
-
-    }
-
-
-    public boolean createSubtask(Subtask subtask) throws ServiceException {
-        try {
-            if (TaskValidator.validateSubtask(subtask)) {
-                return TaskDAO.createSubTask(subtask);
-            } else {
-                return false;
-            }
-        } catch (InvalidInputException | DAOException e) {
-            throw new ServiceException("Error while creating subtask: " + e.getMessage());
-        }
-    }
-
-    /**
-     * Retrieves a list of tasks along with their associated subtasks from the database.
-     *
-     * @return An ArrayList of ArrayLists, where each inner ArrayList contains task ID and its subtasks.
-     * @throws DAOException If there's an issue with database operations.
-     */
-    public List<Subtask> readSubtask() throws ServiceException {
-        try {
-            return TaskDAO.readSubTask();
-        }
-        catch (DAOException e) {
-            throw new ServiceException("Error while reading subtask: " + e.getMessage());
-        }
-    }
-
-    /**
-     * Updates a specific subtask in the database.
-     *
-     * @param subtask   The new subtask value.
-     * @return True if the subtask value is valid and successfully updated, false otherwise.
-     * @throws DAOException If there's an issue with database operations.
-     * @throws InvalidInputException If the subtask value is invalid.
-     */
-    public boolean updateSubtask(Subtask subtask) throws ServiceException {
-        try {
-            if(TaskDAO.getAllSubtaskIds().contains(subtask.getSubtaskId())) {
-                if(TaskValidator.validateSubtask(subtask)) {
-                    return TaskDAO.updatesubtask(subtask);
-                }
-            }
-            else{
-                throw new ServiceException(INVALID_TASK_ID);
-            }
-        } catch (InvalidInputException | DAOException e) {
-            throw new ServiceException("Error while updating subtask: " + e.getMessage());
-        }
-        return false;
-    }
-
-    /**
-     * Changes the status of a task in the FreshTime application.
-     *
-     * @param taskStatus The new status of the task.
-     * @param taskId     The ID of the task whose status is to be changed.
-     * @return True if the task status change is successful, false otherwise.
-     * @throws DAOException If an error occurs while changing the task status.
-     */
-//    public boolean changeTaskStatus(TaskStatus taskStatus, int taskId) throws DAOException {
-//        return ProgressDAO.changeTaskStatus(taskStatus, taskId);
-//    }
+	public boolean deleteSubTask(int subtaskId) throws ServiceException {
+		Logger.info("Deleting Subtask in db");
+		try {
+			if (TaskDAO.getAllSubtaskIds().contains(subtaskId)) {
+				return TaskDAO.deleteSubTask(subtaskId);
+			} else {
+				throw new ServiceException("Invalid subtaskId: subtask doesn't exist");
+			}
+		} catch (DAOException e) {
+			throw new ServiceException(e.getMessage());
+		}
+	}
 
 }

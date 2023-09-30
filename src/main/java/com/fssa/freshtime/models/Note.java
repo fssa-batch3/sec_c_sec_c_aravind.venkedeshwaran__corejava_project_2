@@ -1,14 +1,15 @@
 package com.fssa.freshtime.models;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 public class Note {
 
 	private int notesId;
+	private int userId;
 	private String heading;
 	private String notesCategory;
 	private String notes;
-	private LocalDateTime createdOn;
+	private LocalDate createdOn;
 
 	public int getNotesId() {
 		return notesId;
@@ -16,6 +17,15 @@ public class Note {
 
 	public void setNotesId(int notes_id) {
 		this.notesId = notes_id;
+	}
+	
+
+	public int getUserId() {
+		return userId;
+	}
+
+	public void setUserId(int user_id) {
+		this.userId = user_id;
 	}
 
 	public String getHeading() {
@@ -42,11 +52,11 @@ public class Note {
 		this.notes = notes;
 	}
 
-	public LocalDateTime getCreatedOn() {
+	public LocalDate getCreatedOn() {
 		return createdOn;
 	}
 
-	public void setCreatedOn(LocalDateTime createdOn) {
+	public void setCreatedOn(LocalDate createdOn) {
 		this.createdOn = createdOn;
 	}
 

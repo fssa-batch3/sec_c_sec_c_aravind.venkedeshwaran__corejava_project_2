@@ -22,7 +22,7 @@ class TaskServiceTest {
     TaskService taskService = new TaskService();
 
     Task getTask() {
-        Task task = new Task();
+        Task task = new Task(); 
 
         task.setUserId(1);
         task.setTaskName("Write testcase for the validator");
@@ -73,7 +73,7 @@ class TaskServiceTest {
     void testReadTaskByUser() {
         
         try {
-            List<Task> taskList = taskService.readAllTaskByUser("testuser01@gmail.com");
+            List<Task> taskList = taskService.readAllTaskByUser(1);
 
             assertNotNull(taskList);
             assertFalse(taskList.isEmpty());
@@ -214,11 +214,11 @@ class TaskServiceTest {
 
         subtask.setTaskId(1);
         subtask.setSubtaskName("Create Detailed subtask");
-        subtask.setDescription("Create Detailed subtask description");
-        subtask.setDueDate(LocalDate.now().plusDays(1));
-        subtask.setPriority(TaskPriority.MEDIUM);
-        subtask.setStatus(TaskStatus.INPROGRESS);
-        subtask.setReminder(LocalDateTime.now().plusDays(1).plusMinutes(30));
+//        subtask.setDescription("Create Detailed subtask description");
+//        subtask.setDueDate(LocalDate.now().plusDays(1));
+//        subtask.setPriority(TaskPriority.MEDIUM);
+//        subtask.setStatus(TaskStatus.INPROGRESS);
+//        subtask.setReminder(LocalDateTime.now().plusDays(1).plusMinutes(30));
 
         return subtask;
     }
@@ -239,20 +239,36 @@ class TaskServiceTest {
     }
 
 
+//    @Test
+//    void testReadTaskWithSubTask(){
+//        try{
+//            List<Subtask> taskWithSubTaskList = taskService.readSubTaskById(1);
+//
+//            assertNotNull(taskWithSubTaskList);
+//            assertFalse(taskWithSubTaskList.isEmpty());
+//
+//            for (Subtask subtask : taskWithSubTaskList){
+//                Logger.info(subtask);
+//            }
+//        }
+//        catch (ServiceException e) {
+//            fail("An Exception occurred: " + e.getMessage());
+//        }
+//    }
+//    
     @Test
-    void testReadTaskWithSubTask(){
-        try{
-            List<Subtask> taskWithSubTaskList = taskService.readSubtask();
+    public void testReadSubtaskByTaskId() {
+        try {
+            // Call the method to retrieve subtasks
+            List<Subtask> subtaskList = taskService.readAllSubTaskByTaskId(1);
 
-            assertNotNull(taskWithSubTaskList);
-            assertFalse(taskWithSubTaskList.isEmpty());
+            // Assert that the returned list is not null and not empty
+            assertNotNull(subtaskList);
+            assertFalse(subtaskList.isEmpty());
 
-            for (Subtask subtask : taskWithSubTaskList){
-                Logger.info(subtask);
-            }
-        }
-        catch (ServiceException e) {
-            fail("An Exception occurred: " + e.getMessage());
+            Logger.info(subtaskList);
+        } catch (ServiceException | InvalidInputException e) {
+            fail("Error occurred while reading subtasks: " + e.getMessage());
         }
     }
 

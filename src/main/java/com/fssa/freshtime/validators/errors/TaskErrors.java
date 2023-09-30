@@ -14,8 +14,8 @@ public class TaskErrors {
     public static final String INVALID_TASK_DESCRIPTION_MORE_THAN_ONEFIFTY_CHAR = "Invalid Task Description: Task Description Can Not Be More Than 150 Character";
 
 
-    public static final String INVALID_DUEDATE_NULL = "Invalid DueDate: Due date can't be null";
-    public static final String INVALID_DUEDATE_BEFORE_DATE = "Invalid DueDate: Due date can't be before todays date";
+    public static final String INVALID_DATE_NULL = "Invalid DueDate: Due date can't be null";
+    public static final String INVALID_DATE_BEFORE_DATE = "Invalid DueDate: Due date can't be before todays date";
 
 
 

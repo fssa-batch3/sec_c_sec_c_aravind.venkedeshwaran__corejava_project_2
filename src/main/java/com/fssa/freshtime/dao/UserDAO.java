@@ -1,14 +1,14 @@
 package com.fssa.freshtime.dao;
 
-import com.fssa.freshtime.exceptions.DAOException;
-import com.fssa.freshtime.exceptions.InvalidInputException;
-import com.fssa.freshtime.models.User;
-import com.fssa.freshtime.utils.ConnectionUtil;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
+import com.fssa.freshtime.exceptions.DAOException;
+import com.fssa.freshtime.models.User;
+import com.fssa.freshtime.utils.ConnectionUtil;
+import com.fssa.freshtime.utils.PasswordUtil;
 
 public class UserDAO {
 	
@@ -21,7 +21,11 @@ public class UserDAO {
 
                 psmt.setString(1, user.getEmailId());
                 psmt.setString(2, user.getUserName());
-                psmt.setString(3, user.getPassword());
+                
+                String hashPassword = PasswordUtil.encryptPassword(user.getPassword());
+    			psmt.setString(3, hashPassword);
+    			
+                // psmt.setString(3, user.getPassword());
 
                 int rowAffected = psmt.executeUpdate();
                 return rowAffected > 0;
@@ -143,5 +147,10 @@ public class UserDAO {
             throw new DAOException("Error updating user profile: " + e.getMessage());
         }
     }
+    
+    public static void main(String[] args) {
+    	String hashPassword = PasswordUtil.encryptPassword("Arun@2022");
+    	System.out.println(hashPassword);
+	}
 
 }

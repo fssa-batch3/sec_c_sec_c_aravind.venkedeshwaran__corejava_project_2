@@ -1,29 +1,38 @@
 package com.fssa.freshtime.validators;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import org.junit.jupiter.api.Test;
+
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
+import com.fssa.freshtime.exceptions.InvalidInputException;
+import com.fssa.freshtime.models.Task;
 import com.fssa.freshtime.models.enums.TaskPriority;
 import com.fssa.freshtime.models.enums.TaskStatus;
 import com.fssa.freshtime.validators.errors.TaskErrors;
-import com.fssa.freshtime.exceptions.InvalidInputException;
-import org.junit.jupiter.api.Test;
 
-import java.time.*;
-import com.fssa.freshtime.models.Task;
-
-
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class TaskValidatorTest {
-
+	
+	LocalDateTime now = LocalDateTime.now();
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    String formattedTime = now.format(formatter);
+    
+    // Parse the formatted string back into a LocalDateTime
+    LocalDateTime currentTime = LocalDateTime.parse(formattedTime, formatter);
+	
 
     Task getTask() {
         Task task = new Task();
 
         task.setTaskName("Write testcase for the validator");
-        task.setDescription("Write testcase for the validator, test one valid input and two or three invalid input");
-        task.setDueDate(LocalDate.now().plusDays(1));
+        task.setStartDate(LocalDateTime.now().plusDays(1));
+        task.setEndDate(LocalDateTime.now().plusDays(2));
         task.setPriority(TaskPriority.HIGH);
-        task.setStatus(TaskStatus.NOTSTARTED);
+        task.setStatus(TaskStatus.TODO);
         task.setNotes("Write testcase for the validator, test one valid input and two or three invalid input");
         task.setReminder(LocalDateTime.now().plusDays(1).plusMinutes(30));
 
@@ -41,6 +50,8 @@ class TaskValidatorTest {
         assertThrows(InvalidInputException.class, () -> TaskValidator.validate(null));
     }
 
+    
+//  Task Name Validation Test Case  
     @Test
     void testValidateTaskName() {
         assertDoesNotThrow(() -> TaskValidator.validateTaskName("Task 01"));
@@ -61,63 +72,75 @@ class TaskValidatorTest {
         assertThrows(InvalidInputException.class, () -> TaskValidator.validateTaskName("Implement new feature in the application to enhance user experience and improve overall performance"), TaskErrors.INVALID_TASK_NAME_MORE_THAN_FIFTY_CHAR);
     }
 
+// 	Start Time Test Cases
     @Test
-    void testValidTaskDescription() {
-        assertDoesNotThrow(() -> TaskValidator.validateTaskDescription("Test Case For Task 01"));
+    void testValidStartDateToday() {
+        assertDoesNotThrow(() -> TaskValidator.validateStartDate(currentTime));
     }
 
     @Test
-    void testInvalidTaskDescriptionWithEmptySpaces() {
-        assertThrows(InvalidInputException.class, () -> TaskValidator.validateTaskDescription(""), TaskErrors.INVALID_TASK_DESCRIPTION_LESS_THAN_TEN_CHAR);
+    void testValidStartDateFuture() {
+        
+        LocalDateTime tenDaysFromToday = currentTime.plusDays(10);// Add 10 days to the current date
+
+        assertDoesNotThrow(() -> TaskValidator.validateStartDate(tenDaysFromToday));
     }
 
     @Test
-    void testInvalidTaskDescriptionWithLessThanTenChar() {
-        assertThrows(InvalidInputException.class, () -> TaskValidator.validateTaskDescription("Just Test"), TaskErrors.INVALID_TASK_NOTES_LESS_THAN_TEN_CHAR);
+    void testNullStartDate(){
+        assertThrows(InvalidInputException.class, () -> TaskValidator.validateStartDate(null));
     }
 
     @Test
-    void testInvalidTaskDescriptionWithMoreThanFiftyChar() {
-        assertThrows(InvalidInputException.class, () -> TaskValidator.validateTaskDescription("Efficiently manage your tasks with our user-friendly to-do application. Organize, prioritize, and track your daily activities with due dates, reminders, and task notes, ensuring you stay on top of everything effortlessly. Increase productivity and achieve your goals with our feature-rich to-do app designed to simplify task management and keep you focused on what matters most."), TaskErrors.INVALID_TASK_DESCRIPTION_MORE_THAN_ONEFIFTY_CHAR);
-    }
-
-
-    @Test
-    void testValidDueDateToday() {
-        LocalDate today = LocalDate.now();
-        assertDoesNotThrow(() -> TaskValidator.validateDueDate(today));
-    }
-
-
-
-    @Test
-    void testValidDueDateFuture() {
-        LocalDate today = LocalDate.now();
-        LocalDate tenDaysFromToday = today.plusDays(10);// Add 10 days to the current date
-
-        assertDoesNotThrow(() -> TaskValidator.validateDueDate(tenDaysFromToday));
+    void testInvalidStartDateYesterday() {
+        
+        LocalDateTime yesterday = currentTime.minusDays(1);
+        assertThrows(InvalidInputException.class, () -> TaskValidator.validateStartDate(yesterday), TaskErrors.INVALID_DATE_BEFORE_DATE);
     }
 
     @Test
-    void testNullDueDate(){
-        assertThrows(InvalidInputException.class, () -> TaskValidator.validateDueDate(null));
+    void testInvalidStartDateBeforeDate() {
+        
+        LocalDateTime tenDaysBeforeToday = currentTime.minusDays(10);// Minus 10 days to the current date
+
+        assertThrows(InvalidInputException.class, () -> TaskValidator.validateStartDate(tenDaysBeforeToday), TaskErrors.INVALID_DATE_BEFORE_DATE);
+    }
+    
+// 	End Time Test Cases
+    @Test
+    void testValidEndDateToday() {
+        assertDoesNotThrow(() -> TaskValidator.validateEndDate(currentTime));
     }
 
     @Test
-    void testInvalidDueDateYesterday() {
-        LocalDate today = LocalDate.now();
-        LocalDate yesterday = today.minusDays(1);
-        assertThrows(InvalidInputException.class, () -> TaskValidator.validateDueDate(yesterday), TaskErrors.INVALID_DUEDATE_BEFORE_DATE);
+    void testValidEndDateFuture() {
+        
+        LocalDateTime tenDaysFromToday = currentTime.plusDays(10);// Add 10 days to the current date
+
+        assertDoesNotThrow(() -> TaskValidator.validateEndDate(tenDaysFromToday));
     }
 
     @Test
-    void testInvalidDueDateBeforeDate() {
-        LocalDate today = LocalDate.now();
-        LocalDate tenDaysBeforeToday = today.minusDays(10);// Minus 10 days to the current date
-
-        assertThrows(InvalidInputException.class, () -> TaskValidator.validateDueDate(tenDaysBeforeToday), TaskErrors.INVALID_DUEDATE_BEFORE_DATE);
+    void testNullEndDate(){
+        assertThrows(InvalidInputException.class, () -> TaskValidator.validateEndDate(null));
     }
 
+    @Test
+    void testInvalidEndDateYesterday() {
+        
+        LocalDateTime yesterday = currentTime.minusDays(1);
+        assertThrows(InvalidInputException.class, () -> TaskValidator.validateEndDate(yesterday), TaskErrors.INVALID_DATE_BEFORE_DATE);
+    }
+
+    @Test
+    void testInvalidEndDateBeforeDate() {
+        
+        LocalDateTime tenDaysBeforeToday = currentTime.minusDays(10);// Minus 10 days to the current date
+
+        assertThrows(InvalidInputException.class, () -> TaskValidator.validateEndDate(tenDaysBeforeToday), TaskErrors.INVALID_DATE_BEFORE_DATE);
+    }
+
+//  Task Notes Validation Test cases
     @Test
     void testValidTaskNotes() {
         assertDoesNotThrow(() -> TaskValidator.validateTaskNotes("Test Note For Task 01"));
@@ -130,56 +153,57 @@ class TaskValidatorTest {
 
     @Test
     void testInvalidTaskNotesLessThanTenChar() {
-        assertThrows(InvalidInputException.class, () -> TaskValidator.validateTaskDescription("Notes"), TaskErrors.INVALID_TASK_NOTES_LESS_THAN_TEN_CHAR);
+        assertThrows(InvalidInputException.class, () -> TaskValidator.validateTaskNotes("Notes"), TaskErrors.INVALID_TASK_NOTES_LESS_THAN_TEN_CHAR);
     }
 
     @Test
     void testInvalidTaskNotesMoreThanFiftyChar() {
-        assertThrows(InvalidInputException.class, () -> TaskValidator.validateTaskDescription("Efficiently manage your tasks with our user-friendly to-do application. Organize, prioritize, and track your daily activities with due dates, reminders, and task notes, ensuring you stay on top of everything effortlessly. Increase productivity and achieve your goals with our feature-rich to-do app designed to simplify task management and keep you focused on what matters most."), TaskErrors.INVALID_TASK_NOTES_MORE_THAN_ONEFIFTY_CHAR);
+        assertThrows(InvalidInputException.class, () -> TaskValidator.validateTaskNotes("Efficiently manage your tasks with our user-friendly to-do application. Organize, prioritize, and track your daily activities with due dates, reminders, and task notes, ensuring you stay on top of everything effortlessly. Increase productivity and achieve your goals with our feature-rich to-do app designed to simplify task management and keep you focused on what matters most."), TaskErrors.INVALID_TASK_NOTES_MORE_THAN_ONEFIFTY_CHAR);
     }
 
+    
+//  Reminder Validator Test Cases
     @Test
     void testValidReminderAfterOneMin() {
-        LocalDateTime now = LocalDateTime.now();
-        LocalDateTime reminder_after_1_min = now.plusMinutes(1);
+        
+        LocalDateTime reminder_after_1_min = currentTime.plusMinutes(1);
 
         assertDoesNotThrow(() -> TaskValidator.validateReminder(reminder_after_1_min));
     }
 
     @Test
     void testValidReminderAfterThirtyMin() {
-        LocalDateTime now = LocalDateTime.now();
-        LocalDateTime reminder_after_30_min = now.plusMinutes(30);
+        
+        LocalDateTime reminder_after_30_min = currentTime.plusMinutes(30);
 
         assertDoesNotThrow(() -> TaskValidator.validateReminder(reminder_after_30_min));
-    }
+    } 
 
     @Test
     void testInvalidReminderCurTime() {
-        LocalDateTime currentTime = LocalDateTime.now();
         assertThrows(InvalidInputException.class, () -> TaskValidator.validateReminder(currentTime), TaskErrors.INVALID_REMINDER_CURRENT_TIME);
     }
 
     @Test
     void testInvalidReminderBeforeAMin() {
-        LocalDateTime now = LocalDateTime.now();
-        LocalDateTime reminder_before_a_min = now.minusMinutes(1);
+        
+        LocalDateTime reminder_before_a_min = currentTime.minusMinutes(1);
 
         assertThrows(InvalidInputException.class, () -> TaskValidator.validateReminder(reminder_before_a_min), TaskErrors.INVALID_REMINDER_BEFORE_DATE_TIME);
     }
 
     @Test
     void testInvalidReminderBeforeThreeHrs() {
-        LocalDateTime now = LocalDateTime.now();
-        LocalDateTime reminder_before_3_hours = now.minusHours(3);
+        
+        LocalDateTime reminder_before_3_hours = currentTime.minusHours(3);
 
         assertThrows(InvalidInputException.class, () -> TaskValidator.validateReminder(reminder_before_3_hours), TaskErrors.INVALID_REMINDER_BEFORE_DATE_TIME);
     }
 
     @Test
     void testInvalidReminderBeforeADay() {
-        LocalDateTime today = LocalDateTime.now();
-        LocalDateTime reminder_before_a_day = today.minusDays(1);
+        LocalDateTime currentTime = LocalDateTime.now();
+        LocalDateTime reminder_before_a_day = currentTime.minusDays(1);
 
         assertThrows(InvalidInputException.class, () -> TaskValidator.validateReminder(reminder_before_a_day), TaskErrors.INVALID_REMINDER_BEFORE_DATE_TIME);
     }

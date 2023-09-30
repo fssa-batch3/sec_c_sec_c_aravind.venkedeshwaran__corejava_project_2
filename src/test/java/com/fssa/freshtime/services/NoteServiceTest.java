@@ -15,6 +15,7 @@ import com.fssa.freshtime.utils.Logger;
 
 public class NoteServiceTest {
 
+	NoteService noteservice = new NoteService();
 
 
     @Test
@@ -24,21 +25,21 @@ public class NoteServiceTest {
         validNote.setHeading("Sample Note");
         validNote.setNotes("<h1>\nTitle</h1><div><br></div><div>The Test Note</div>");
 
-        assertTrue(NoteService.createNote(validNote));
+        assertTrue(noteservice.createNote(validNote));
     }
 
     @Test
     public void testCreateInvalidNote() {
         Note invalidNote = new Note(); // All fields are null
 
-        assertThrows(ServiceException.class, () -> NoteService.createNote(invalidNote));
+        assertThrows(ServiceException.class, () -> noteservice.createNote(invalidNote));
     }
 
     @Test
     public void testReadNotesWithValidCategory() throws ServiceException {
         String validCategory = "Category";
         
-        List<Note> notesList = NoteService.readNotes(validCategory);
+        List<Note> notesList = noteservice.readNotesByCategory(validCategory, 1);
 
         assertNotNull(notesList);
         
@@ -49,7 +50,7 @@ public class NoteServiceTest {
     public void testReadNotesWithInvalidCategory() throws ServiceException {
         String invalidCategory = null; // Invalid category
 
-       assertThrows(ServiceException.class, ()-> NoteService.readNotes(invalidCategory));
+       assertThrows(ServiceException.class, ()-> noteservice.readNotesByCategory(invalidCategory, 1));
     }
 
     @Test
@@ -60,28 +61,28 @@ public class NoteServiceTest {
         validNote.setHeading("Heading");
         validNote.setNotes("<h1>\nTitle</h1><div><br></div><div>The Updated Note</div>");
 
-        assertTrue(NoteService.updateNote(validNote));
+        assertTrue(noteservice.updateNote(validNote));
     }
 
     @Test
     public void testUpdateInvalidNote() {
         Note invalidNote = new Note(); // All fields are null
 
-        assertThrows(ServiceException.class, ()-> NoteService.updateNote(invalidNote));
+        assertThrows(ServiceException.class, ()-> noteservice.updateNote(invalidNote));
     }
 
     @Test
     public void testDeleteValidNotes() throws ServiceException {
         int validNoteId = 1; // Assuming this is a valid note ID
 
-        assertTrue(NoteService.deleteNotes(validNoteId));
+        assertTrue(noteservice.deleteNotes(validNoteId));
     }
 
     @Test
     public void testDeleteInvalidNotes() throws ServiceException {
         int invalidNoteId = -1; // Invalid note ID
 
-        assertThrows(ServiceException.class, ()-> NoteService.deleteNotes(invalidNoteId));
+        assertThrows(ServiceException.class, ()-> noteservice.deleteNotes(invalidNoteId));
     }
 }
 
