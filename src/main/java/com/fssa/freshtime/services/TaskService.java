@@ -9,7 +9,6 @@ import com.fssa.freshtime.exceptions.InvalidInputException;
 import com.fssa.freshtime.exceptions.ServiceException;
 import com.fssa.freshtime.models.Subtask;
 import com.fssa.freshtime.models.Task;
-import com.fssa.freshtime.models.Tasktags;
 import com.fssa.freshtime.validators.TaskValidator;
 import com.fssa.freshtime.validators.UserValidator;
 
@@ -74,31 +73,8 @@ public class TaskService {
 		Logger.info("updating Task in db");
 		try {
 			if(task != null) {
-				if (TaskDAO.getAllIds().contains(task.getTaskId())) {
-					
-				    boolean isValid = true;
-					    
-				    if (task.getTaskName() != null) {
-				        isValid &= TaskValidator.validateTaskName(task.getTaskName());
-				    }
-				    
-				    if (task.getStartDate() != null) {
-				        isValid &= TaskValidator.validateStartDate(task.getStartDate());
-				    }
-				    
-				    if (task.getEndDate() != null) {
-				        isValid &= TaskValidator.validateEndDate(task.getEndDate());
-				    }
-				    
-				    if (task.getReminder() != null) {
-				        isValid &= TaskValidator.validateReminder(task.getReminder());
-				    }
-				    
-				    if (task.getNotes() != null) {
-				        isValid &= TaskValidator.validateTaskNotes(task.getNotes());
-				    }
-				    
-				    if (isValid) {
+				if (TaskDAO.getAllIds().contains(task.getTaskId())) {				    
+				    if (TaskValidator.validateTaskName(task.getTaskName())) {
 				        return TaskDAO.updateTask(task);
 				    }
 	
@@ -189,30 +165,7 @@ public class TaskService {
 		try {
 			if (subtask != null) {
 				if (TaskDAO.getAllSubtaskIds().contains(subtask.getSubtaskId())) {
-					
-					boolean isValid = true;
-					
-				    if (subtask.getSubtaskName() != null) {
-				        isValid &= TaskValidator.validateTaskName(subtask.getSubtaskName());
-				    }
-				    
-				    if (subtask.getStartDate() != null) {
-				        isValid &= TaskValidator.validateStartDate(subtask.getStartDate());
-				    }
-				    
-				    if (subtask.getEndDate() != null) {
-				        isValid &= TaskValidator.validateEndDate(subtask.getEndDate());
-				    }
-				    
-				    if (subtask.getReminder() != null) {
-				        isValid &= TaskValidator.validateReminder(subtask.getReminder());
-				    }
-				    
-				    if (subtask.getNotes() != null) {
-				        isValid &= TaskValidator.validateTaskNotes(subtask.getNotes());
-				    }
-				    
-				    if (isValid) {
+				    if (TaskValidator.validateTaskName(subtask.getSubtaskName())) {
 				    	return TaskDAO.updatesubtask(subtask);
 				    }
 					

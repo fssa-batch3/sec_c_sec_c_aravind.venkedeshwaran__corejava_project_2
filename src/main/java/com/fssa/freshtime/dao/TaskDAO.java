@@ -30,11 +30,12 @@ public class TaskDAO {
 
 	public static boolean addTask(int userId, String taskName) throws DAOException {
 		try (Connection connection = ConnectionUtil.getConnection()) {
-			String insertQuery = "INSERT INTO tasks (user_id, taskname) VALUES (?, ?)";
+			String insertQuery = "INSERT INTO tasks (user_id, taskname, status) VALUES (?, ?, ?)";
 			try (PreparedStatement psmt = connection.prepareStatement(insertQuery)) {
 
 				psmt.setInt(1, userId);
 				psmt.setString(2, taskName);
+				psmt.setString(3, TaskStatus.TODO.toString());
 				
 
 				int rowAffected = psmt.executeUpdate();
@@ -211,10 +212,13 @@ public class TaskDAO {
 
 	public static boolean createSubTask(Subtask subtask) throws DAOException {
 		try (Connection connection = ConnectionUtil.getConnection()) {
-			String insertQuery = "INSERT INTO subtasks (task_id, subtask) VALUES (?, ?)";
+			String insertQuery = "INSERT INTO subtasks (task_id, subtask, status) VALUES (?, ?, ?)";
+			
 			try (PreparedStatement psmt = connection.prepareStatement(insertQuery)) {
+				
 				psmt.setInt(1, subtask.getTaskId());
 				psmt.setString(2, subtask.getSubtaskName());
+				psmt.setString(3, TaskStatus.TODO.toString());
 
 				int rowAffected = psmt.executeUpdate();
 
@@ -265,10 +269,9 @@ public class TaskDAO {
 
 	public static Subtask readSubTaskById(int subtaskId) throws DAOException {
 		try (Connection connection = ConnectionUtil.getConnection()) {
-			String selectQuery = "SELECT subtask_id, task_id, subtask, startdate, enddate, priority, status, reminder, notes, created_date_time"
-					+ "FROM subtasks WHERE subtask_id = ?";
+			String selectSubtaskQuery = "SELECT task_id, subtask, startdate, enddate, priority, status, reminder, notes, created_date_time FROM subtasks WHERE subtask_id = ?";
 
-			try (PreparedStatement psmt = connection.prepareStatement(selectQuery)) {
+			try (PreparedStatement psmt = connection.prepareStatement(selectSubtaskQuery)) {
 
 				psmt.setInt(1, subtaskId);
 
@@ -278,7 +281,7 @@ public class TaskDAO {
 
 					while (rs.next()) {
 
-						subtask.setSubtaskId(rs.getInt("subtask_id"));
+						subtask.setSubtaskId(subtaskId);
 						subtask.setTaskId(rs.getInt("task_id"));
 						subtask.setSubtaskName(rs.getString("subtask"));  
 
@@ -317,7 +320,7 @@ public class TaskDAO {
 
 	public static boolean updatesubtask(Subtask subtask) throws DAOException {
 		try (Connection connection = ConnectionUtil.getConnection()) {
-			String updateQuery = "UPDATE subtasks SET subtaskname=?, startdate=?, enddate=?, priority=?, status=?, reminder=?, notes=? WHERE subtask_id = ? ";
+			String updateQuery = "UPDATE subtasks SET subtask=?, startdate=?, enddate=?, priority=?, status=?, reminder=?, notes=? WHERE subtask_id = ? ";
 			
 			try (PreparedStatement psmt = connection.prepareStatement(updateQuery)) {
 				
