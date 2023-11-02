@@ -28,24 +28,29 @@ public class TaskDAO {
 	 * @throws DAOException If an error occurs while creating the task.
 	 **/
 
-	public static boolean addTask(int userId, String taskName) throws DAOException {
-		try (Connection connection = ConnectionUtil.getConnection()) {
-			String insertQuery = "INSERT INTO tasks (user_id, taskname, status) VALUES (?, ?, ?)";
-			try (PreparedStatement psmt = connection.prepareStatement(insertQuery)) {
+	public static boolean addTask(Task task) throws DAOException {
+	    try (Connection connection = ConnectionUtil.getConnection()) {
+	        String insertQuery = "INSERT INTO tasks (user_id, taskname, startdate, enddate, priority, status, reminder, notes) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+	        
+	        try (PreparedStatement psmt = connection.prepareStatement(insertQuery)) {
+	            psmt.setInt(1, task.getUserId());
+	            psmt.setString(2, task.getTaskName());
+	            psmt.setTimestamp(3, java.sql.Timestamp.valueOf(task.getStartDate()));
+	            psmt.setTimestamp(4, java.sql.Timestamp.valueOf(task.getEndDate()));
+	            
+	            psmt.setString(5, task.getPriority() != null ? task.getPriority().toString() : null);
+	            psmt.setString(6, task.getStatus() != null ? task.getStatus().toString() : null);
+	            psmt.setTimestamp(7, task.getReminder() != null ? java.sql.Timestamp.valueOf(task.getReminder()) : null);
+	            psmt.setString(8, task.getNotes() != null ? task.getNotes() : null);
 
-				psmt.setInt(1, userId);
-				psmt.setString(2, taskName);
-				psmt.setString(3, TaskStatus.TODO.toString());
-				
-
-				int rowAffected = psmt.executeUpdate();
-
-				return rowAffected > 0;
-			}
-		} catch (SQLException e) {
-			throw new DAOException("Error while adding task: " + e.getMessage());
-		}
+	            int rowAffected = psmt.executeUpdate();
+	            return rowAffected > 0;
+	        }
+	    } catch (SQLException e) {
+	        throw new DAOException("Error while adding task: " + e.getMessage());
+	    }
 	}
+
 
 
 	/**

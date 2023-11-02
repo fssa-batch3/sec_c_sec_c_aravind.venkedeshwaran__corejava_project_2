@@ -80,34 +80,19 @@ public class UserService {
 	    return null;
 	}
 	
-	public boolean forgotPassword(String emailId, String newPassword)throws ServiceException {
-		Logger.info("Changing pass in db");
-	    try {
-			if (UserValidator.validateEmailId(emailId) && UserValidator.validatePassword(newPassword)) {
-				
-			    if (userDAO.emailExists(emailId)) {
-			        return userDAO.forgotPasswordInDB(emailId, newPassword);
-			    } else {
-			        throw new DAOException("Email not found: " + emailId);
-			    }
-			}
-		} catch (InvalidInputException | DAOException | SQLException e) {
-			throw new ServiceException(e.getMessage());
-		}
-	    
-	    return false;
-	}
+
 	
 
-	 public boolean updateUserProfile(User user) throws ServiceException {
-		 Logger.info("updating user in db");
+	 public boolean changeUserName(String email, String userName) throws ServiceException {
+		 
 	        try {
-	            if(UserValidator.validateUser(user)) {
-		            if (userDAO.emailExists(user.getEmailId())) {
-		                return userDAO.updateUserProfile(user);
-		            } else {
-		                throw new DAOException("Email not found: " + user.getEmailId());
-		            }
+	            if (userDAO.emailExists(email)) {
+	            	if(UserValidator.validateUserName(userName)) {
+	            		Logger.info("changing username in db");
+	            		return userDAO.changeUserName(email,userName);
+	            } else {
+	                throw new DAOException("Email not found: " + userName);
+	            }
 	            }
 	        }
 	        catch (DAOException | InvalidInputException e) {
@@ -115,6 +100,24 @@ public class UserService {
 	        }
 			return false;
 	 }
+	 
+		public boolean changePassword(String emailId, String newPassword)throws ServiceException {
+			
+		    try {
+				if (UserValidator.validateEmailId(emailId) && UserValidator.validatePassword(newPassword)) {
+					
+				    if (userDAO.emailExists(emailId)) {
+				    	Logger.info("Changing pass in db");
+				        return userDAO.changePassword(emailId, newPassword);
+				    } else {
+				        throw new DAOException("Email not found: " + emailId);
+				    }
+				}
+			} catch (InvalidInputException | DAOException | SQLException e) {
+				throw new ServiceException(e.getMessage());
+			}
+			return false;
+		}
 
 
 }

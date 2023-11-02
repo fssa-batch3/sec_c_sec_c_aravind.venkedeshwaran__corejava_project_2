@@ -59,13 +59,6 @@ public class UserValidator {
 			throw new InvalidInputException(UserErrors.INVALID_USERNAME_SHORT);
 		}
 
-		if (userName.matches(".*\\d.*")) {
-			throw new InvalidInputException(UserErrors.INVALID_USERNAME_NUMERIC);
-		}
-
-		if (userName.matches(".*[^a-zA-Z0-9].*")) {
-			throw new InvalidInputException(UserErrors.INVALID_USERNAME_SPECIAL_CHAR);
-		}
 
 		return true;
 

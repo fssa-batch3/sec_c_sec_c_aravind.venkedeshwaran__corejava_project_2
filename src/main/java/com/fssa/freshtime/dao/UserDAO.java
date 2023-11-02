@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
 import com.fssa.freshtime.exceptions.DAOException;
 import com.fssa.freshtime.models.User;
 import com.fssa.freshtime.utils.ConnectionUtil;
@@ -116,12 +115,32 @@ public class UserDAO {
     }
 
     
-
-    public boolean forgotPasswordInDB(String emailId, String newPassword) throws DAOException, SQLException {
+    
+    public boolean changeUserName(String email, String userName) throws DAOException {
+        String updateQuery = "UPDATE users SET user_name = ? WHERE email_Id = ?";
+        try (Connection connection = ConnectionUtil.getConnection();
+        		
+             PreparedStatement psmt = connection.prepareStatement(updateQuery)) {
+            
+            psmt.setString(1, userName);
+            psmt.setString(2, email);
+            
+            int rowsUpdated = psmt.executeUpdate();
+            
+            return rowsUpdated > 0;
+            
+        } catch (SQLException e) {
+            throw new DAOException("Error while changing user name: " + e.getMessage());
+        }
+    }
+    
+    public boolean changePassword(String emailId, String newPassword) throws DAOException, SQLException {
         try (Connection connection = ConnectionUtil.getConnection()) {
             String updateQuery = "UPDATE users SET password = ? WHERE email_Id = ?";
             try (PreparedStatement psmt = connection.prepareStatement(updateQuery)) {
-                psmt.setString(1, newPassword);
+            	
+            	String hashPassword = PasswordUtil.encryptPassword(newPassword);
+                psmt.setString(1, hashPassword);
                 psmt.setString(2, emailId);
 
                 int rowAffected = psmt.executeUpdate();
@@ -129,25 +148,6 @@ public class UserDAO {
             }
         }
     }
-    
-    public boolean updateUserProfile(User user) throws DAOException {
-        String updateQuery = "UPDATE users SET user_name = ?, password = ? WHERE email_Id = ?";
-        try (Connection connection = ConnectionUtil.getConnection();
-             PreparedStatement psmt = connection.prepareStatement(updateQuery)) {
-            
-            psmt.setString(1, user.getUserName());
-            psmt.setString(2, user.getPassword());
-            psmt.setString(3, user.getEmailId());
-            
-            int rowsUpdated = psmt.executeUpdate();
-            
-            return rowsUpdated > 0;
-            
-        } catch (SQLException e) {
-            throw new DAOException("Error updating user profile: " + e.getMessage());
-        }
-    }
-    
     public static void main(String[] args) {
     	String hashPassword = PasswordUtil.encryptPassword("Arun@2022");
     	System.out.println(hashPassword);

@@ -32,11 +32,15 @@ public class TaskService {
 	 * @throws InvalidInputException If the task is invalid.
 	 */
 
-	public boolean addTask(int userId, String taskName) throws ServiceException {
+	public boolean addTask(Task task) throws ServiceException {
 		Logger.info("Adding Task in db");
 		try {
-			if (TaskValidator.validateTaskName(taskName)) {
-				return TaskDAO.addTask(userId, taskName);
+			if (TaskValidator.validateTaskName(task.getTaskName())) {
+				if(task.getEndDate().isBefore(task.getStartDate())) {
+					throw new InvalidInputException("End Date Can't be before start date");
+				}
+				return TaskDAO.addTask(task);
+				
 			}
 		} catch (InvalidInputException | DAOException e) {
 			throw new ServiceException("Error while adding task: " + e.getMessage());
@@ -74,10 +78,13 @@ public class TaskService {
 		try {
 			if(task != null) {
 				if (TaskDAO.getAllIds().contains(task.getTaskId())) {				    
-				    if (TaskValidator.validateTaskName(task.getTaskName())) {
-				        return TaskDAO.updateTask(task);
-				    }
-	
+					if (TaskValidator.validateTaskName(task.getTaskName())) {
+						if(task.getEndDate().isBefore(task.getStartDate())) {
+							throw new InvalidInputException("End Date Can't be before start date");
+						}
+						return TaskDAO.updateTask(task);
+						
+					}
 				} else {
 					throw new ServiceException(INVALID_TASK_ID);
 				}
@@ -165,10 +172,12 @@ public class TaskService {
 		try {
 			if (subtask != null) {
 				if (TaskDAO.getAllSubtaskIds().contains(subtask.getSubtaskId())) {
-				    if (TaskValidator.validateTaskName(subtask.getSubtaskName())) {
-				    	return TaskDAO.updatesubtask(subtask);
-				    }
-					
+					if (TaskValidator.validateTaskName(subtask.getSubtaskName())) {
+						if(subtask.getEndDate().isBefore(subtask.getStartDate())) {
+							throw new InvalidInputException("End Date Can't be before start date");
+						}
+						return TaskDAO.updatesubtask(subtask);
+					}
 				} else {
 					throw new ServiceException("Invalid Subtask Id");
 				}

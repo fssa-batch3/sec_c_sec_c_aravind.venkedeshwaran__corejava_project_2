@@ -111,9 +111,6 @@ public class TaskValidator {
      */
     public static boolean validateTaskNotes(String notes) throws InvalidInputException {
 
-        if (notes == null){
-            throw new InvalidInputException(TaskErrors.INVALID_TASK_NOTES_NULL);
-        }
         if(notes.trim().length() < ValidatorConstants.SHORT_MIN_LEN){
             throw new InvalidInputException(TaskErrors.INVALID_TASK_NOTES_LESS_THAN_TEN_CHAR);
         }
