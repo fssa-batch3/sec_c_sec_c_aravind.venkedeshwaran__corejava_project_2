@@ -50,7 +50,8 @@ Absence of Comprehensive Analytics: Users lack tools that provide insightful ana
 # Architecture and DataBase Design: 
 - [Sql Script](https://github.com/fssa-batch3/sec_c_sec_c_aravind.venkedeshwaran__corejava_project_2/blob/main/src/main/sql/FreshTimeSqlSheet.sql) ↗️
 
-<img width="639" alt="FreshTime ERR Diagram" src="https://github.com/fssa-batch3/sec_c_sec_c_aravind.venkedeshwaran__corejava_project_2/assets/116251979/e187368e-62d9-41e8-b51f-39939ddc067f">
+<img width="689" alt="FreshTime ERR Diagram" src="https://github.com/fssa-batch3/sec_c_sec_c_aravind.venkedeshwaran__corejava_project_2/assets/116251979/8dc371e4-9acd-4176-bfa4-c6926c267a2e">
+
 
 # Code Quality Analysis: 
 
